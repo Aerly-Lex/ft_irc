@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 
 #include "includes.hpp"
 
@@ -17,8 +17,8 @@ class Server {
 		// Constructor, Destructor
 		Server(int port, std::string password);
 		~Server();
-		Server(Server const & src);
-		Server & operator=(Server const & src);
+		// Server(Server const & src);
+		// Server & operator=(Server const & src);
 
 		// Getter
 		int				getSocket() const;

@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/07 10:33:46 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/07 13:55:16 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 //////////////////////////////////////////
 
 bool	Server::Signal = false;
-
 
 //////////////////////////////////////////
 //				Constructor				//
@@ -34,15 +33,16 @@ Server::~Server()
 	// close all clients/channels?
 }
 
-Server::Server(Server const & src)
-{
-	*this = src;
-}
+// Server::Server(Server const & src)
+// {
+// 	*this = src;
+// }
 
-Server& Server::operator=(Server const & src)
-{
-	return *this;
-}
+// Server& Server::operator=(Server const & src)
+// {
+// 	(void)src;
+// 	return *this;
+// }
 
 //////////////////////////////////////////
 //				getter					//
@@ -69,12 +69,12 @@ std::string	Server::getPassword() const
 
 void	Server::signalHandler(int signum)
 {
-	// (void)signum; // Supress unused variable warning
+	// (void)signum; // Supress unused variable warning from www
 	Server::Signal = true; // Set the signal flag to true
 	std::cout << RED << "Interrupt signal (" << signum << ") received. Exiting..." << RESET << std::endl;
 }
 
-
+// use AF_INET in your struct sockaddr_in and PF_INET in your call to socket()
 void		Server::initServer()
 {
 	// implement signals for the server
@@ -83,11 +83,16 @@ void		Server::initServer()
 
 	// Create a socket
 	// (protocol family)PF_INET/(address family)AF_INET: IPv4 | SOCK_STREAM: TCP - Two-way communication | 0: chooses protocol automatically (based on type)
-	_socket = socket(AF_INET, SOCK_STREAM, 0);
+	// _socket = socket(AF_INET, SOCK_STREAM, 0); // man connect
+	_socket = socket(PF_INET, SOCK_STREAM, 0);
 	if (_socket == -1)
 		throw std::runtime_error("Socket creation failed");
 
 	// Bind the socket to an address
+	// This structure makes it easy to reference elements of the socket address.
+	// Note that sin_zero (which is included to pad the structure to the length of a struct sockaddr) should be set to all zeros with the function memset().
+	// Also, notice that sin_family corresponds to sa_family in a struct sockaddr and should be set to “AF_INET”.
+	// Finally, the sin_port must be in Network Byte Order (by using htons()!)
 	sockaddr_in	serverAddress;
 	serverAddress.sin_family = AF_INET; // AF_INET: IPv4
 	serverAddress.sin_addr.s_addr = INADDR_ANY; // INADDR_ANY: any address for binding
@@ -110,14 +115,61 @@ void		Server::initServer()
 
 void		Server::run()
 {
-	pollfd fds[1];
-	FD_ZERO(&fds[0]);
-	FD_SET(_socket, &fds[0]);
+	std::vector<pollfd>	fds;
+
+	pollfd	serverPoll;
+	serverPoll.fd = _socket;	// server socket fd
+	serverPoll.events = POLLIN;	// watches for incoming connections
+	fds.push_back(serverPoll);	// add server socket to the pollfd vector
+
 	while (Server::Signal == false)
 	{
+		// poll() blocks till a event occurs
 		int ret = poll(fds.data(), fds.size(), -1);
-	}
+		if (ret == -1)
+			throw std::runtime_error("Poll failed");
 
+		for (size_t i = 0; i < fds.size(); i++)
+		{
+			if (fds[i].revents & POLLIN) // if a socket has data to read
+			{
+				if (fds[i].fd == _socket) // if its the server socket
+				{
+					sockaddr_in	clientAddr;
+					socklen_t	clientAddrLen = sizeof(clientAddr);
+					int clientSocket = accept(_socket, (sockaddr*)&clientAddr, &clientAddrLen);
+					if (clientSocket == -1)
+						throw std::runtime_error("Failed to accept incoming connection");
+
+					// adding the new client socket to poll-fd list
+					pollfd	client_fd;
+					client_fd.fd = clientSocket;
+					client_fd.events = POLLIN;
+					fds.push_back(client_fd);
+
+					std::cout << "New client connected: " << clientSocket << std::endl;
+					std::cout << "Total clients: " << fds.size() - 1 << std::endl;
+				}
+				else // if it's a client-socket (accept data)
+				{
+					char	buffer[1024] = {0};
+					int		bytesRead = recv(fds[i].fd, buffer, 1024, 0);
+					if (bytesRead <= 0) // 0 for disconnection, -1 for error
+					{
+						std::cout << "Client " << fds[i].fd << " disconnected" << std::endl;
+						close(fds[i].fd);
+						fds.erase(fds.begin() + i); // remove the client from the pollfd list
+						i--; // decrement i to avoid skipping the next client
+					}
+					else
+					{
+						buffer[bytesRead] = '\0';
+						std::cout << "Client " << fds[i].fd << " sent: " << buffer << std::endl;
+					}
+				}
+			}
+		}
+	}
 }
 
 //      int poll(struct pollfd fds[], nfds_t nfds, int timeout);

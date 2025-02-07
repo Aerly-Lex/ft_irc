@@ -6,11 +6,15 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/07 09:42:30 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/07 13:52:35 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/includes.hpp"
+
+// !!!!RTFM!!!! !!!!RTFM!!!! !!!!RTFM!!!!
+// https://beej.us/guide/bgnet/html/
+// !!!!RTFM!!!! !!!!RTFM!!!! !!!!RTFM!!!!
 
 // Function to validate and check if the port is within the acceptable range
 // 0- 1023 are reserved ports
