@@ -22,6 +22,7 @@
 // Custom includes
 
 #include "Server.hpp"
+#include "Client.hpp"
 
 // ANSI Colors
 
@@ -36,7 +37,7 @@
 #define WHITE   "\033[37m"
 #define BOLD    "\033[1m"
 
-// Messages
+// Messages defines
 
 #define invalidArguments "Error: Wrong number of arguments" << std::endl << "Usage: ./webserv [port] [password]"
 #define invalidPort "Error: Port number must be between 1024 and 49151" << std::endl

@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/07 13:55:16 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/08 12:40:24 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,6 @@ Server::~Server()
 	close(_socket);
 	// close all clients/channels?
 }
-
-// Server::Server(Server const & src)
-// {
-// 	*this = src;
-// }
-
-// Server& Server::operator=(Server const & src)
-// {
-// 	(void)src;
-// 	return *this;
-// }
 
 //////////////////////////////////////////
 //				getter					//
@@ -77,7 +66,6 @@ void	Server::signalHandler(int signum)
 // use AF_INET in your struct sockaddr_in and PF_INET in your call to socket()
 void		Server::initServer()
 {
-	// implement signals for the server
 	signal(SIGINT, Server::signalHandler);
 	signal(SIGQUIT, Server::signalHandler);
 
@@ -129,48 +117,115 @@ void		Server::run()
 		if (ret == -1)
 			throw std::runtime_error("Poll failed");
 
-		for (size_t i = 0; i < fds.size(); i++)
+		for (size_t i = 0; i < fds.size(); i++) // to slim the function
 		{
-			if (fds[i].revents & POLLIN) // if a socket has data to read
+			if (fds[i].revents & POLLIN)
 			{
-				if (fds[i].fd == _socket) // if its the server socket
-				{
-					sockaddr_in	clientAddr;
-					socklen_t	clientAddrLen = sizeof(clientAddr);
-					int clientSocket = accept(_socket, (sockaddr*)&clientAddr, &clientAddrLen);
-					if (clientSocket == -1)
-						throw std::runtime_error("Failed to accept incoming connection");
-
-					// adding the new client socket to poll-fd list
-					pollfd	client_fd;
-					client_fd.fd = clientSocket;
-					client_fd.events = POLLIN;
-					fds.push_back(client_fd);
-
-					std::cout << "New client connected: " << clientSocket << std::endl;
-					std::cout << "Total clients: " << fds.size() - 1 << std::endl;
-				}
-				else // if it's a client-socket (accept data)
-				{
-					char	buffer[1024] = {0};
-					int		bytesRead = recv(fds[i].fd, buffer, 1024, 0);
-					if (bytesRead <= 0) // 0 for disconnection, -1 for error
-					{
-						std::cout << "Client " << fds[i].fd << " disconnected" << std::endl;
-						close(fds[i].fd);
-						fds.erase(fds.begin() + i); // remove the client from the pollfd list
-						i--; // decrement i to avoid skipping the next client
-					}
-					else
-					{
-						buffer[bytesRead] = '\0';
-						std::cout << "Client " << fds[i].fd << " sent: " << buffer << std::endl;
-					}
-				}
+				if (fds[i].fd == _socket)
+					acceptNewCients(fds);
+				else
+					handleClientMessage(fds, i);
 			}
 		}
+
+		// for (size_t i = 0; i < fds.size(); i++)
+		// {
+		// 	if (fds[i].revents & POLLIN) // if a socket has data to read
+		// 	{
+		// 		if (fds[i].fd == _socket) // if its the server socket
+		// 		{
+		// 			sockaddr_in	clientAddr;
+		// 			socklen_t	clientAddrLen = sizeof(clientAddr);
+		// 			int clientSocket = accept(_socket, (sockaddr*)&clientAddr, &clientAddrLen);
+		// 			if (clientSocket == -1)
+		// 				throw std::runtime_error("Failed to accept incoming connection");
+
+		// 			// create a new client object and add to map
+		// 			Client newClient(clientSocket);
+		// 			_clients[clientSocket] = newClient;
+
+		// 			// adding the new client socket to poll-fd list
+		// 			pollfd	client_fd;
+		// 			client_fd.fd = clientSocket;
+		// 			client_fd.events = POLLIN;
+		// 			fds.push_back(client_fd);
+
+		// 			std::cout << "New client connected: " << clientSocket << std::endl;
+		// 			std::cout << "Total clients: " << fds.size() - 1 << std::endl;
+
+		// 		}
+		// 		else // if it's a client-socket (accept data)
+		// 		{
+		// 			char	buffer[1024] = {0};
+		// 			int		bytesRead = recv(fds[i].fd, buffer, 1024, 0);
+		// 			if (bytesRead <= 0) // 0 for disconnection, -1 for error
+		// 			{
+		// 				std::cout << "Client " << fds[i].fd << " disconnected" << std::endl;
+		// 				close(fds[i].fd);
+		// 				_clients.erase(fds[i].fd); // remove the client from the map
+		// 				fds.erase(fds.begin() + i); // remove the client from the pollfd list
+		// 				i--; // decrement i to avoid skipping the next client
+		// 			}
+		// 			else
+		// 			{
+		// 				buffer[bytesRead] = '\0';
+		// 				std::cout << "Client " << fds[i].fd << " sent: " << buffer << std::endl;
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		// parse message
+		// check if command
+		// execute command
+		// send response
+		//commands
 	}
 }
+
+void	Server::acceptNewCients(std::vector<pollfd>& fds)
+{
+	sockaddr_in	clientAddr;
+	socklen_t	clientAddrLen = sizeof(clientAddr);
+	int clientSocket = accept(_socket, (sockaddr*)&clientAddr, &clientAddrLen);
+	if (clientSocket == -1)
+		throw std::runtime_error("Failed to accept incoming connection");
+
+	// create a new client object and add to map
+	Client newClient(clientSocket);
+	_clients[clientSocket] = newClient;
+
+	// adding the new client socket to poll-fd list
+	pollfd	client_fd;
+	client_fd.fd = clientSocket;
+	client_fd.events = POLLIN;
+	fds.push_back(client_fd);
+
+	std::cout << "New client connected: " << clientSocket << std::endl;
+	std::cout << "Total clients: " << fds.size() - 1 << std::endl;
+}
+
+void	Server::handleClientMessage(std::vector<pollfd>& fds, int i)
+{
+	char	buffer[1024] = {0};
+	int		bytesRead = recv(fds[i].fd, buffer, 1024, 0);
+
+	if (bytesRead <= 0) // 0 for disconnection, -1 for error
+	{
+		std::cout << "Client " << fds[i].fd << " disconnected" << std::endl;
+		close(fds[i].fd);
+		_clients.erase(fds[i].fd); // remove the client from the map
+		fds.erase(fds.begin() + i); // remove the client from the pollfd list
+		// return;
+	}
+
+	buffer[bytesRead] = '\0'; // null-terminate the buffer
+	std::cout << "Client " << fds[i].fd << " sent: " << buffer << std::endl;
+
+	// handleClientCommand(clientSocket, message);
+}
+
+//void	Server::handleClientCommand(int clientSocket, const std::string& message)??
 
 //      int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 // DESCRIPTION

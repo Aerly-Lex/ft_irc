@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/07 13:52:35 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/08 09:53:05 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,19 @@ int	main(int argc, char **argv)
 }
 /*
 To Do:
-- Extra folders for commands
+- Extra folder for commands
+- implement client and channel (classes?)
+- implement commands
+- implement message parsing
 
 ALLOWED FUNCTIONS, among others:
 setsockopt, getsockname,
 getprotobyname, gethostbyname, getaddrinfo,
 freeaddrinfo, connect, accept, htons,
 htonl, ntohs, ntohl, inet_addr, inet_ntoa, send,
-recv, signal, sigaction, lseek, fstat, fcntl, poll
+sigaction, lseek, fstat, fcntl,
 USED:
-socket, close, bind, listen
+socket, close, bind, listen, poll, recv, signal
 
 REQUIREMENTS:
 > Server must handle multiple clients at the same time and never hang

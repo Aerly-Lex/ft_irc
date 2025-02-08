@@ -2,14 +2,17 @@
 
 #include "includes.hpp"
 
+class Client;
+
 class Server {
 	private:
 		int			_socket;
 		int			_port;
 		std::string	_password;
-		//	container for clients&channels
-		// std::map< int, pollfd > _fds;
 		std::vector<pollfd> _fds;
+
+		std::map<int, Client> _clients;
+		//container for channel?
 
 		static bool	Signal;
 
@@ -17,8 +20,6 @@ class Server {
 		// Constructor, Destructor
 		Server(int port, std::string password);
 		~Server();
-		// Server(Server const & src);
-		// Server & operator=(Server const & src);
 
 		// Getter
 		int				getSocket() const;
@@ -29,4 +30,7 @@ class Server {
 		static void		signalHandler(int signum);
 		void			initServer();
 		void			run();
+
+		void	acceptNewCients(std::vector<pollfd>& fds);
+		void	handleClientMessage(std::vector<pollfd>& fds, int i);
 };
