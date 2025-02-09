@@ -2,6 +2,7 @@
 
 // C++ includes
 
+#include <sstream>
 #include <iostream>
 #include <sys/types.h>		// socket, bind, connect, listen, accept, lseek, fstat
 #include <sys/socket.h>		// socket, bind, connect, listen, accept, setsockopt, getsockname
@@ -23,6 +24,7 @@
 
 #include "Server.hpp"
 #include "Client.hpp"
+#include "Channel.hpp"
 
 // ANSI Colors
 

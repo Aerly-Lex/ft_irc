@@ -2,7 +2,8 @@
 
 #include "includes.hpp"
 
-class Client {
+class Client
+{
 	public:
 		int				_socket;
 		std::string		_nickName;
@@ -15,9 +16,4 @@ class Client {
 		Client() : _socket(-1) {}
 		Client(int socket) : _socket(socket) {}
 		~Client() {}
-
-	// class Channel {
-	// 	public:
-
-	// };
 };

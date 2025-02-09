@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/08 09:53:05 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/09 11:18:06 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ int	main(int argc, char **argv)
 /*
 To Do:
 - Extra folder for commands
-- implement client and channel (classes?)
 - implement commands
 - implement message parsing
 
@@ -83,7 +82,11 @@ Thus, if you try to read/recv or write/send in any file descriptor without using
 > Communication between client and server has to be done via TCP/IP (v4 or v6).
 
 > Using your reference client with your server must be similar to using it with any official IRC server. However, you only have to implement the following features:
-> You must be able to authenticate, set a nickname, a username, join a channel, send and receive private messages using your reference client.
+> You must be able to	authenticate
+						set a nickname
+						a username
+						join a channel
+						send and receive private messages using your reference client.
 > All the messages sent from one client to a channel have to be forwarded to every other client that joined the channel.
 > You must have operators and regular users.
 

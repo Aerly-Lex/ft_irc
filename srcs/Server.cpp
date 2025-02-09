@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/08 12:40:24 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/09 11:19:30 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,11 +175,6 @@ void		Server::run()
 		// 	}
 		// }
 
-		// parse message
-		// check if command
-		// execute command
-		// send response
-		//commands
 	}
 }
 
@@ -216,16 +211,39 @@ void	Server::handleClientMessage(std::vector<pollfd>& fds, int i)
 		close(fds[i].fd);
 		_clients.erase(fds[i].fd); // remove the client from the map
 		fds.erase(fds.begin() + i); // remove the client from the pollfd list
-		// return;
+		return;
 	}
 
 	buffer[bytesRead] = '\0'; // null-terminate the buffer
+	std::string message(buffer);
 	std::cout << "Client " << fds[i].fd << " sent: " << buffer << std::endl;
 
-	// handleClientCommand(clientSocket, message);
+	handleClientCommand(fds[i].fd, message);
 }
 
-//void	Server::handleClientCommand(int clientSocket, const std::string& message)??
+void	Server::handleClientCommand(int clientSocket, const std::string& message)
+{
+	std::istringstream	iss(message);
+	std::string			command;
+	iss >> command;
+
+	std::cout << "\t#Test#Message: " << message << std::endl;
+	std::cout << "\t#Test#Command: " << command << std::endl;
+	if (command == "KICK")
+		(void)command;
+	else if (command == "INVITE")
+		std::cout << "INVITE" << std::endl;
+	else if (command == "TOPIC")
+		std::cout << "TOPIC" << std::endl;
+	else if (command == "MODE")
+		(void)command;
+	else if (command == "QUIT")
+		(void)command;
+	else if (command == "PART") // part == leave channel
+		(void)command;
+	else
+		(void)command; //unkown command
+}
 
 //      int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 // DESCRIPTION
