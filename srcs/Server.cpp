@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/09 11:19:30 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/12 13:05:42 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ bool	Server::Signal = false;
 //				Constructor				//
 //////////////////////////////////////////
 
-Server::Server(int port, std::string password) : _port(port), _password(password)
+Server::Server(int port, std::string password)
+: _port(port), _password(password), _commands(*this)
 {
 
 }
@@ -51,6 +52,17 @@ std::string	Server::getPassword() const
 {
 	return (_password);
 }
+
+std::map<int, Client>&			Server::getClients()
+{
+	return (_clients);
+}
+
+std::map<std::string, Channel>&	Server::getChannels()
+{
+	return (_channels);
+}
+
 
 //////////////////////////////////////////
 //				class methods			//
@@ -238,9 +250,9 @@ void	Server::handleClientCommand(int clientSocket, const std::string& message)
 	else if (command == "MODE")
 		(void)command;
 	else if (command == "QUIT")
-		(void)command;
+		_commands.quit(clientSocket);
 	else if (command == "PART") // part == leave channel
-		(void)command;
+		_commands.part(clientSocket, message);
 	else
 		(void)command; //unkown command
 }

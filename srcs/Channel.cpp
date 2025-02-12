@@ -6,11 +6,16 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/09 11:07:51 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/12 13:40:36 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/includes.hpp"
+
+Channel::Channel()
+{
+
+}
 
 Channel::Channel(const std::string& name) : _name(name)
 {
@@ -21,6 +26,10 @@ Channel::Channel(const std::string& name) : _name(name)
 	inviteOnly = false;
 }
 
+Channel::~Channel()
+{
+
+}
 
 void	Channel::addMember(int clientSocket)
 {

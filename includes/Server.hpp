@@ -1,9 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/12 13:09:28 by Dscheffn          #+#    #+#             */
+/*   Updated: 2025/02/12 13:11:02 by Dscheffn         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
 
 #include "includes.hpp"
+#include "Commands.hpp"
 
 class Client;
 class Channel;
+// class Commands;
 
 class Server
 {
@@ -15,6 +29,7 @@ class Server
 
 		std::map<int, Client>			_clients;
 		std::map<std::string, Channel>	_channels;
+		Commands						_commands;
 
 		static bool	Signal;
 
@@ -24,9 +39,11 @@ class Server
 		~Server();
 
 		// Getter
-		int				getSocket() const;
-		int				getPort() const;
-		std::string		getPassword() const;
+		int								getSocket() const;
+		int								getPort() const;
+		std::string						getPassword() const;
+		std::map<int, Client>&			getClients();
+		std::map<std::string, Channel>&	getChannels();
 
 		// Class methods
 		static void		signalHandler(int signum);

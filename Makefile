@@ -9,13 +9,21 @@ SRC			=	srcs/main.cpp \
 				srcs/Client.cpp \
 				srcs/Channel.cpp \
 				srcs/Utilities.cpp
-				# srcs/commands
+
+CMDS		=	srcs/commands/Commands.cpp \
+				srcs/commands/invite.cpp \
+				srcs/commands/mode.cpp \
+				srcs/commands/part.cpp \
+				srcs/commands/quit.cpp \
+				srcs/commands/topic.cpp
+
+ALL_SRC		= $(SRC) $(CMDS)
 
 OBJ_DIR		= obj/
-OBJ			= $(SRC:srcs/%.cpp=$(OBJ_DIR)%.o)
+OBJ			= $(ALL_SRC:srcs/%.cpp=$(OBJ_DIR)%.o)
 
 $(OBJ_DIR)%.o: srcs/%.cpp
-	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(NAME): $(OBJ)
@@ -32,7 +40,7 @@ test: $(NAME)
 	@./ircserv 6667 1234
 
 clean:
-	rm -f $(OBJ)
+	rm -rf $(OBJ_DIR)
 	@if [ -d $(OBJ_DIR) ]; then rmdir $(OBJ_DIR); fi
 
 fclean: clean
@@ -40,4 +48,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re #test
+.PHONY: all clean fclean re test

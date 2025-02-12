@@ -14,7 +14,9 @@ class Channel
 
 		std::vector<int>	_members;
 
+		Channel();
 		Channel(const std::string& name);
+		~Channel();
 
 		void	addMember(int clientSocket);
 		void	removeMember(int clientSocket);
