@@ -26,6 +26,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Commands.hpp"
+#include "replies.hpp"
 
 // ANSI Colors
 
@@ -42,5 +43,5 @@
 
 // Messages defines
 
-#define invalidArguments "Error: Wrong number of arguments" << std::endl << "Usage: ./webserv [port] [password]"
-#define invalidPort "Error: Port number must be between 1024 and 49151" << std::endl
+#define invalidArguments	"Error: Wrong number of arguments" << std::endl << "Usage: ./webserv [port] [password]"
+#define invalidPort			"Error: Port number must be between 1024 and 49151" << std::endl

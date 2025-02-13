@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/12 13:40:36 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/13 12:52:42 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,15 @@ Channel::~Channel()
 
 }
 
-void	Channel::addMember(int clientSocket)
-{
-	_members.push_back(clientSocket);
-}
+// void	Channel::addMember(int clientSocket)
+// {
+// 	_members.push_back(clientSocket);
+// }
 
-void	Channel::removeMember(int clientSocket)
-{
-	_members.erase(std::remove(_members.begin(), _members.end(), clientSocket), _members.end());
-}
+// void	Channel::removeMember(int clientSocket)
+// {
+// 	_members.erase(std::remove(_members.begin(), _members.end(), clientSocket), _members.end());
+// }
 
 // void	Channel::broadcastMessage(int clientSocket, const std::string& message)
 // {

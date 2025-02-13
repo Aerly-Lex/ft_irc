@@ -2,7 +2,7 @@
 
 NAME		:= ircserv
 CXX			:= c++
-CXXFLAGS	= #-Wall -Werror -Wextra -std=c++17 -Iincludes
+CXXFLAGS	= -std=c++17 #-Wall -Werror -Wextra -std=c++17 -Iincludes
 
 SRC			=	srcs/main.cpp \
 				srcs/Server.cpp \
@@ -15,6 +15,7 @@ CMDS		=	srcs/commands/Commands.cpp \
 				srcs/commands/mode.cpp \
 				srcs/commands/part.cpp \
 				srcs/commands/quit.cpp \
+				srcs/commands/join.cpp \
 				srcs/commands/topic.cpp
 
 ALL_SRC		= $(SRC) $(CMDS)

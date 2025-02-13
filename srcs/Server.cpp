@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/12 13:05:42 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/13 14:21:10 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,17 @@ Server::~Server()
 //				getter					//
 //////////////////////////////////////////
 
-int			Server::getSocket() const
+int				Server::getSocket() const
 {
 	return (_socket);
 }
 
-int			Server::getPort() const
+int				Server::getPort() const
 {
 	return (_port);
 }
 
-std::string	Server::getPassword() const
+std::string		Server::getPassword() const
 {
 	return (_password);
 }
@@ -199,7 +199,7 @@ void	Server::acceptNewCients(std::vector<pollfd>& fds)
 		throw std::runtime_error("Failed to accept incoming connection");
 
 	// create a new client object and add to map
-	Client newClient(clientSocket);
+	Client	newClient(clientSocket);
 	_clients[clientSocket] = newClient;
 
 	// adding the new client socket to poll-fd list
@@ -207,6 +207,36 @@ void	Server::acceptNewCients(std::vector<pollfd>& fds)
 	client_fd.fd = clientSocket;
 	client_fd.events = POLLIN;
 	fds.push_back(client_fd);
+
+
+	// create a general channel if it doesn't exist
+	if (_channels.empty())
+	{
+		Channel	defaultChannel("general");
+		_channels["general"] = defaultChannel;
+
+		_channels["general"].members.push_back(clientSocket);
+
+		std::cout << GREEN << "New client connected: " << clientSocket << std::endl << RESET;
+		std::cout << "Total clients: " << fds.size() - 1 << std::endl;
+
+		std::string welcomeMessage = RPL_WELCOME(_clients[clientSocket]._nickName);
+		send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+
+		std::string	memberList = "Members in #general: ";
+		for (int member : _channels["general"].members)
+			memberList += std::to_string(member) + " ";
+		memberList += "\r\n";
+		send(clientSocket, memberList.c_str(), memberList.size(), 0);
+
+		// _channels["general"] = Channel("general");
+		// std::cout << GREEN << "Created channel: general" << std::endl << RESET;
+		// std::string joinMessage = ":127.0.0.1 MODE #test +o Nickname2";
+		// send(clientSocket, joinMessage.c_str(), joinMessage.size(), 0);
+	// :127.0.0.1 MODE #test +o Nickname2
+		// send(clientSocket, joinMessage.c_str(), joinMessage.size(), 0);
+	}
+
 
 	std::cout << "New client connected: " << clientSocket << std::endl;
 	std::cout << "Total clients: " << fds.size() - 1 << std::endl;
@@ -241,7 +271,15 @@ void	Server::handleClientCommand(int clientSocket, const std::string& message)
 
 	std::cout << "\t#Test#Message: " << message << std::endl;
 	std::cout << "\t#Test#Command: " << command << std::endl;
-	if (command == "KICK")
+	if (command == "JOIN")
+	{
+		std::cout << RED << "JOIN" << std::endl << RESET;
+		std::string channelName;
+		iss >> channelName;
+		std::cout << channelName << std::endl;
+		_commands.join(clientSocket, channelName);
+	}
+	else if (command == "KICK")
 		(void)command;
 	else if (command == "INVITE")
 		std::cout << "INVITE" << std::endl;
