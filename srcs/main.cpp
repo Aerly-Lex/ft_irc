@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/17 11:06:12 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:51:32 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,6 @@ int	main(int argc, char **argv)
 	return 0;
 }
 /*
-To Do:
-- implement commands
-- implement message parsing
-
 ALLOWED FUNCTIONS, among others:
 setsockopt, getsockname,
 getprotobyname, gethostbyname, getaddrinfo,

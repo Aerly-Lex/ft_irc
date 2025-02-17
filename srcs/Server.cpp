@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/17 11:31:20 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:50:55 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ std::map<std::string, Channel>&	Server::getChannels()
 void	Server::signalHandler(int signum)
 {
 	// (void)signum; // Supress unused variable warning from www
-	Server::Signal = true; // Set the signal flag to true
+	Server::Signal	= true; // Set the signal flag to true
 	std::cout << RED << "Interrupt signal (" << signum << ") received. Exiting..." << RESET << std::endl;
 }
 
@@ -197,7 +197,25 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 	// // :127.0.0.1 MODE #test +o Nickname2
 	// 	// send(userSocket, joinMessage.c_str(), joinMessage.size(), 0);
 	// }
-	std::string welcomeMessage = ":irc.server.com 001 " + newUser._nickName + " :Welcome to the 42 IRC server!\r\n";
+	// std::string welcomeMessage = ":irc.server.com 001 " + newUser._nickName + " :Welcome to the 42 IRC server!\r\n";
+
+	/////test
+	std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickName);
+	send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+	// 002 - Host info
+	std::string yourHost = ":irc.server.com 002 " + newUser._nickName + " :Your host is irc.server.com  running version 1.0" + CRLF;
+
+	// 003 - Server creation time
+	std::string created = ":irc.server.com 003 " + newUser._nickName + " :This server was created today" + CRLF;
+
+	// 004 - Server details
+	std::string myInfo = ":irc.server.com 004 " + newUser._nickName + " irc.server.com 1.0 iov" + CRLF;
+
+	// send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+	send(userSocket, yourHost.c_str(), yourHost.size(), 0);
+	send(userSocket, created.c_str(), created.size(), 0);
+	send(userSocket, myInfo.c_str(), myInfo.size(), 0);
+	/////test
 
 	std::cout << "New User connected: " << userSocket << std::endl;
 	std::cout << "Total Users: " << fds.size() - 1 << std::endl;
@@ -235,7 +253,7 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	std::cout << "\t#Test#Command: " << command << std::endl << RESET;
 	if (command == "JOIN")
 	{
-		std::cout << RED << "JOIN" << std::endl << RESET;
+		std::cout << MAGENTA << "JOIN" << std::endl << RESET;
 		std::string	channelName;
 		iss >> channelName;
 		std::cout << channelName << std::endl;
@@ -243,10 +261,17 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	}
 	else if (command == "NICK")
 	{
-		std::cout << RED << "NICK" << std::endl << RESET;
+		std::cout << MAGENTA << "NICK" << std::endl << RESET;
 		std::string	nickName;
 		iss >> nickName;
 		_commands.nick(userSocket, message);
+	}
+	else if (command == "PING")
+	{
+		std::cout << MAGENTA << "PING" << std::endl << RESET;
+		std::string	token;
+		iss >> token;
+		_commands.ping(userSocket);
 	}
 	else if (command == "KICK")
 		(void)command;

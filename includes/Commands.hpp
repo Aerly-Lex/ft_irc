@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:31:17 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/17 11:20:22 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:40:28 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ class Commands
 		Commands(Server& server);
 		~Commands();
 
-		void	part(int clientSocket, const std::string& channelName);
-		void	quit(int clientSocket);
-		void	join(int clientSocket, const std::string& channelName);
-		void	nick(int clientSocket, const std::string&nickName);
+		void	part(int userSocket, const std::string& channelName);
+		void	quit(int userSocket);
+		void	join(int userSocket, const std::string& channelName);
+		void	nick(int userSocket, const std::string&nickName);
+		void	ping(int userSocket);
 };

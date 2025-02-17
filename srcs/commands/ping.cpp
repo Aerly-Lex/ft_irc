@@ -1,28 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   part.cpp                                           :+:      :+:    :+:   */
+/*   ping.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 12:24:24 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/17 12:40:21 by Dscheffn         ###   ########.fr       */
+/*   Created: 2025/02/17 12:33:06 by Dscheffn          #+#    #+#             */
+/*   Updated: 2025/02/17 12:44:02 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/includes.hpp"
 
-// leave the channel
-
-void	Commands::part(int userSocket, const std::string& channelName)
+void	Commands::ping(int userSocket)
 {
-	// iss >> channelName;
-	// _server.getChannels()[channelName].removeMember(clientSocket);
-	std::cout << "You have left " << channelName << std::endl;
-	// does channel exist?
-	// need password?
-	// need invite? (check mode)
-	// _userName <<
-	// remove the client from the channel
-	// _channels[channelName].removeMember(clientSocket);
+	std::string	pongMsg = RPL_PONG(_users[userSocket]._nickName, "irc.server.com");
+	std::cout << MAGENTA << pongMsg << std::endl << RESET;
+	send(userSocket, pongMsg.c_str(), pongMsg.size(), 0);
 }
