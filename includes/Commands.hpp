@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:31:17 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/13 14:02:48 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/17 10:33:28 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,5 @@ class Commands
 		void	part(int clientSocket, const std::string& channelName);
 		void	quit(int clientSocket);
 		void	join(int clientSocket, const std::string& channelName);
+		void	nick(int clientSocket, const std::string&nickName);
 };

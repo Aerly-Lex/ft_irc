@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/13 14:15:43 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/16 11:29:52 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 // RPL_NAMREPLY (353)
 //Sent as a reply to the NAMES command, this numeric lists the clients that are joined to <channel> and their status in that channel.
-
+#define RPL_JOINMSG(nickname, username, hostname, channel) (std::string(":") + nickname + "!" + username + "@" + hostname + " JOIN " + channel + CRLF)
 //RPL_ENDOFNAMES (366)
 //   "<client> <channel> :End of /NAMES list"
 // Sent as a reply to the NAMES command, this numeric specifies the end of a list of channel member names.

@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/13 14:21:10 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:09:42 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,54 +139,6 @@ void		Server::run()
 					handleClientMessage(fds, i);
 			}
 		}
-
-		// for (size_t i = 0; i < fds.size(); i++)
-		// {
-		// 	if (fds[i].revents & POLLIN) // if a socket has data to read
-		// 	{
-		// 		if (fds[i].fd == _socket) // if its the server socket
-		// 		{
-		// 			sockaddr_in	clientAddr;
-		// 			socklen_t	clientAddrLen = sizeof(clientAddr);
-		// 			int clientSocket = accept(_socket, (sockaddr*)&clientAddr, &clientAddrLen);
-		// 			if (clientSocket == -1)
-		// 				throw std::runtime_error("Failed to accept incoming connection");
-
-		// 			// create a new client object and add to map
-		// 			Client newClient(clientSocket);
-		// 			_clients[clientSocket] = newClient;
-
-		// 			// adding the new client socket to poll-fd list
-		// 			pollfd	client_fd;
-		// 			client_fd.fd = clientSocket;
-		// 			client_fd.events = POLLIN;
-		// 			fds.push_back(client_fd);
-
-		// 			std::cout << "New client connected: " << clientSocket << std::endl;
-		// 			std::cout << "Total clients: " << fds.size() - 1 << std::endl;
-
-		// 		}
-		// 		else // if it's a client-socket (accept data)
-		// 		{
-		// 			char	buffer[1024] = {0};
-		// 			int		bytesRead = recv(fds[i].fd, buffer, 1024, 0);
-		// 			if (bytesRead <= 0) // 0 for disconnection, -1 for error
-		// 			{
-		// 				std::cout << "Client " << fds[i].fd << " disconnected" << std::endl;
-		// 				close(fds[i].fd);
-		// 				_clients.erase(fds[i].fd); // remove the client from the map
-		// 				fds.erase(fds.begin() + i); // remove the client from the pollfd list
-		// 				i--; // decrement i to avoid skipping the next client
-		// 			}
-		// 			else
-		// 			{
-		// 				buffer[bytesRead] = '\0';
-		// 				std::cout << "Client " << fds[i].fd << " sent: " << buffer << std::endl;
-		// 			}
-		// 		}
-		// 	}
-		// }
-
 	}
 }
 
@@ -200,6 +152,15 @@ void	Server::acceptNewCients(std::vector<pollfd>& fds)
 
 	// create a new client object and add to map
 	Client	newClient(clientSocket);
+	newClient._socket = clientSocket;
+	newClient._nickName = "Nick" + std::to_string(clientSocket);
+	newClient._userName = "";
+	newClient._realName = "";
+	newClient._password = "";
+	// newClient._hostName = inet_ntoa(clientAddr.sin_addr); // saving IP-Adress as hostname
+	newClient._hostName = "";
+	// newClient._ipAddress = inet_ntoa(clientAddr.sin_addr); // saving IP-Adress
+	newClient._registered = false;
 	_clients[clientSocket] = newClient;
 
 	// adding the new client socket to poll-fd list
@@ -210,33 +171,33 @@ void	Server::acceptNewCients(std::vector<pollfd>& fds)
 
 
 	// create a general channel if it doesn't exist
-	if (_channels.empty())
-	{
-		Channel	defaultChannel("general");
-		_channels["general"] = defaultChannel;
+	// if (_channels.empty())
+	// {
+	// 	Channel	defaultChannel("general");
+	// 	_channels["general"] = defaultChannel;
 
-		_channels["general"].members.push_back(clientSocket);
+	// 	_channels["general"].members.push_back(clientSocket);
 
-		std::cout << GREEN << "New client connected: " << clientSocket << std::endl << RESET;
-		std::cout << "Total clients: " << fds.size() - 1 << std::endl;
+	// 	std::cout << GREEN << "New client connected: " << clientSocket << std::endl << RESET;
+	// 	std::cout << "Total clients: " << fds.size() - 1 << std::endl;
 
-		std::string welcomeMessage = RPL_WELCOME(_clients[clientSocket]._nickName);
-		send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+	// 	std::string welcomeMessage = RPL_WELCOME(_clients[clientSocket]._nickName);
+	// 	send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
 
-		std::string	memberList = "Members in #general: ";
-		for (int member : _channels["general"].members)
-			memberList += std::to_string(member) + " ";
-		memberList += "\r\n";
-		send(clientSocket, memberList.c_str(), memberList.size(), 0);
+	// 	std::string	memberList = "Members in #general: ";
+	// 	for (int member : _channels["general"].members)
+	// 		memberList += std::to_string(member) + " ";
+	// 	memberList += "\r\n";
+	// 	send(clientSocket, memberList.c_str(), memberList.size(), 0);
 
-		// _channels["general"] = Channel("general");
-		// std::cout << GREEN << "Created channel: general" << std::endl << RESET;
-		// std::string joinMessage = ":127.0.0.1 MODE #test +o Nickname2";
-		// send(clientSocket, joinMessage.c_str(), joinMessage.size(), 0);
-	// :127.0.0.1 MODE #test +o Nickname2
-		// send(clientSocket, joinMessage.c_str(), joinMessage.size(), 0);
-	}
-
+	// 	// _channels["general"] = Channel("general");
+	// 	// std::cout << GREEN << "Created channel: general" << std::endl << RESET;
+	// 	// std::string joinMessage = ":127.0.0.1 MODE #test +o Nickname2";
+	// 	// send(clientSocket, joinMessage.c_str(), joinMessage.size(), 0);
+	// // :127.0.0.1 MODE #test +o Nickname2
+	// 	// send(clientSocket, joinMessage.c_str(), joinMessage.size(), 0);
+	// }
+	std::string welcomeMessage = ":irc.server.com 001 " + newClient._nickName + " :Welcome to the 42 IRC server!\r\n";
 
 	std::cout << "New client connected: " << clientSocket << std::endl;
 	std::cout << "Total clients: " << fds.size() - 1 << std::endl;
@@ -253,11 +214,12 @@ void	Server::handleClientMessage(std::vector<pollfd>& fds, int i)
 		close(fds[i].fd);
 		_clients.erase(fds[i].fd); // remove the client from the map
 		fds.erase(fds.begin() + i); // remove the client from the pollfd list
+		// i--;
 		return;
 	}
 
 	buffer[bytesRead] = '\0'; // null-terminate the buffer
-	std::string message(buffer);
+	std::string	message(buffer);
 	std::cout << "Client " << fds[i].fd << " sent: " << buffer << std::endl;
 
 	handleClientCommand(fds[i].fd, message);
@@ -269,15 +231,22 @@ void	Server::handleClientCommand(int clientSocket, const std::string& message)
 	std::string			command;
 	iss >> command;
 
-	std::cout << "\t#Test#Message: " << message << std::endl;
-	std::cout << "\t#Test#Command: " << command << std::endl;
+	std::cout << MAGENTA <<  "\t#Test#Message: " << message << std::endl;
+	std::cout << "\t#Test#Command: " << command << std::endl << RESET;
 	if (command == "JOIN")
 	{
 		std::cout << RED << "JOIN" << std::endl << RESET;
-		std::string channelName;
+		std::string	channelName;
 		iss >> channelName;
 		std::cout << channelName << std::endl;
 		_commands.join(clientSocket, channelName);
+	}
+	else if (command == "NICK")
+	{
+		std::cout << RED << "NICK" << std::endl << RESET;
+		std::string	nickName;
+		iss >> nickName;
+		_commands.nick(clientSocket, message);
 	}
 	else if (command == "KICK")
 		(void)command;
@@ -293,6 +262,17 @@ void	Server::handleClientCommand(int clientSocket, const std::string& message)
 		_commands.part(clientSocket, message);
 	else
 		(void)command; //unkown command
+
+	// else if (command == "USER") {
+	// 	std::string userName, realName;
+	// 	iss >> userName;
+	// 	iss.ignore(256, ' '); // Ignoriere den Hostnamen
+	// 	iss.ignore(256, ' '); // Ignoriere den Servernamen
+	// 	std::getline(iss, realName, ':'); // Realname beginnt nach dem Doppelpunkt
+	// 	// _commands.user(fds[i].fd, userName, realName);
+	// }
+
+
 }
 
 //      int poll(struct pollfd fds[], nfds_t nfds, int timeout);

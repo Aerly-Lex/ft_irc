@@ -13,6 +13,7 @@ SRC			=	srcs/main.cpp \
 CMDS		=	srcs/commands/Commands.cpp \
 				srcs/commands/invite.cpp \
 				srcs/commands/mode.cpp \
+				srcs/commands/nick.cpp \
 				srcs/commands/part.cpp \
 				srcs/commands/quit.cpp \
 				srcs/commands/join.cpp \

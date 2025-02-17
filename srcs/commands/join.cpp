@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:02:20 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/13 14:27:20 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/17 10:26:36 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,14 @@ void	Commands::join(int clientSocket, const std::string& channelName)
 	_server.getChannels()[channelName].members.push_back(clientSocket);
 
 	// Send JOIN message to client
-	std::string	joinMsg = ":" + _clients[clientSocket]._nickName + " JOIN :" + channelName + CRLF;
+	// std::string	joinMsg = ":" + _clients[clientSocket]._nickName + " JOIN :" + channelName + CRLF;
+	std::cout << _clients[clientSocket]._nickName + "!" + _clients[clientSocket]._userName + "@" + _clients[clientSocket]._hostName + " JOIN :" + channelName << std::endl;
+	std::string joinMsg = RPL_JOINMSG(_clients[clientSocket]._nickName, _clients[clientSocket]._userName, _clients[clientSocket]._hostName, channelName);
 	std::cout << RED << joinMsg << std::endl << RESET;
 	send(clientSocket, joinMsg.c_str(), joinMsg.size(), 0);
 
+	// Send JOIN message to all other clients in channel
+
 }
+
+// :<nick>!<user>@<host> JOIN :<channel>
