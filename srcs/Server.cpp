@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/17 11:09:42 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:31:20 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ Server::Server(int port, std::string password)
 Server::~Server()
 {
 	close(_socket);
-	// close all clients/channels?
+	// close all users/channels?
 }
 
 //////////////////////////////////////////
@@ -53,9 +53,9 @@ std::string		Server::getPassword() const
 	return (_password);
 }
 
-std::map<int, Client>&			Server::getClients()
+std::map<int, User>&			Server::getUsers()
 {
-	return (_clients);
+	return (_users);
 }
 
 std::map<std::string, Channel>&	Server::getChannels()
@@ -134,40 +134,40 @@ void		Server::run()
 			if (fds[i].revents & POLLIN)
 			{
 				if (fds[i].fd == _socket)
-					acceptNewCients(fds);
+					acceptNewUsers(fds);
 				else
-					handleClientMessage(fds, i);
+					handleUserMessage(fds, i);
 			}
 		}
 	}
 }
 
-void	Server::acceptNewCients(std::vector<pollfd>& fds)
+void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 {
-	sockaddr_in	clientAddr;
-	socklen_t	clientAddrLen = sizeof(clientAddr);
-	int clientSocket = accept(_socket, (sockaddr*)&clientAddr, &clientAddrLen);
-	if (clientSocket == -1)
+	sockaddr_in	userAddr;
+	socklen_t	userAddrLen = sizeof(userAddr);
+	int userSocket = accept(_socket, (sockaddr*)&userAddr, &userAddrLen);
+	if (userSocket == -1)
 		throw std::runtime_error("Failed to accept incoming connection");
 
-	// create a new client object and add to map
-	Client	newClient(clientSocket);
-	newClient._socket = clientSocket;
-	newClient._nickName = "Nick" + std::to_string(clientSocket);
-	newClient._userName = "";
-	newClient._realName = "";
-	newClient._password = "";
-	// newClient._hostName = inet_ntoa(clientAddr.sin_addr); // saving IP-Adress as hostname
-	newClient._hostName = "";
-	// newClient._ipAddress = inet_ntoa(clientAddr.sin_addr); // saving IP-Adress
-	newClient._registered = false;
-	_clients[clientSocket] = newClient;
+	// create a new User object and add to map
+	User	newUser(userSocket);
+	newUser._socket = userSocket;
+	newUser._nickName = "Nick" + std::to_string(userSocket);
+	newUser._userName = "";
+	newUser._realName = "";
+	newUser._password = "";
+	// newUser._hostName = inet_ntoa(clientAddr.sin_addr); // saving IP-Adress as hostname
+	newUser._hostName = "";
+	// newUser._ipAddress = inet_ntoa(clientAddr.sin_addr); // saving IP-Adress
+	newUser._registered = false;
+	_users[userSocket] = newUser;
 
-	// adding the new client socket to poll-fd list
-	pollfd	client_fd;
-	client_fd.fd = clientSocket;
-	client_fd.events = POLLIN;
-	fds.push_back(client_fd);
+	// adding the new user socket to poll-fd list
+	pollfd	user_fd;
+	user_fd.fd = userSocket;
+	user_fd.events = POLLIN;
+	fds.push_back(user_fd);
 
 
 	// create a general channel if it doesn't exist
@@ -176,56 +176,56 @@ void	Server::acceptNewCients(std::vector<pollfd>& fds)
 	// 	Channel	defaultChannel("general");
 	// 	_channels["general"] = defaultChannel;
 
-	// 	_channels["general"].members.push_back(clientSocket);
+	// 	_channels["general"].members.push_back(userSocket);
 
-	// 	std::cout << GREEN << "New client connected: " << clientSocket << std::endl << RESET;
-	// 	std::cout << "Total clients: " << fds.size() - 1 << std::endl;
+	// 	std::cout << GREEN << "New user connected: " << userSocket << std::endl << RESET;
+	// 	std::cout << "Total user: " << fds.size() - 1 << std::endl;
 
-	// 	std::string welcomeMessage = RPL_WELCOME(_clients[clientSocket]._nickName);
-	// 	send(clientSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+	// 	std::string welcomeMessage = RPL_WELCOME(_users[userSocket]._nickName);
+	// 	send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
 
 	// 	std::string	memberList = "Members in #general: ";
 	// 	for (int member : _channels["general"].members)
 	// 		memberList += std::to_string(member) + " ";
 	// 	memberList += "\r\n";
-	// 	send(clientSocket, memberList.c_str(), memberList.size(), 0);
+	// 	send(userSocket, memberList.c_str(), memberList.size(), 0);
 
 	// 	// _channels["general"] = Channel("general");
 	// 	// std::cout << GREEN << "Created channel: general" << std::endl << RESET;
 	// 	// std::string joinMessage = ":127.0.0.1 MODE #test +o Nickname2";
-	// 	// send(clientSocket, joinMessage.c_str(), joinMessage.size(), 0);
+	// 	// send(userSocket, joinMessage.c_str(), joinMessage.size(), 0);
 	// // :127.0.0.1 MODE #test +o Nickname2
-	// 	// send(clientSocket, joinMessage.c_str(), joinMessage.size(), 0);
+	// 	// send(userSocket, joinMessage.c_str(), joinMessage.size(), 0);
 	// }
-	std::string welcomeMessage = ":irc.server.com 001 " + newClient._nickName + " :Welcome to the 42 IRC server!\r\n";
+	std::string welcomeMessage = ":irc.server.com 001 " + newUser._nickName + " :Welcome to the 42 IRC server!\r\n";
 
-	std::cout << "New client connected: " << clientSocket << std::endl;
-	std::cout << "Total clients: " << fds.size() - 1 << std::endl;
+	std::cout << "New User connected: " << userSocket << std::endl;
+	std::cout << "Total Users: " << fds.size() - 1 << std::endl;
 }
 
-void	Server::handleClientMessage(std::vector<pollfd>& fds, int i)
+void	Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 {
 	char	buffer[1024] = {0};
 	int		bytesRead = recv(fds[i].fd, buffer, 1024, 0);
 
 	if (bytesRead <= 0) // 0 for disconnection, -1 for error
 	{
-		std::cout << "Client " << fds[i].fd << " disconnected" << std::endl;
+		std::cout << "User " << fds[i].fd << " disconnected" << std::endl;
 		close(fds[i].fd);
-		_clients.erase(fds[i].fd); // remove the client from the map
-		fds.erase(fds.begin() + i); // remove the client from the pollfd list
+		_users.erase(fds[i].fd); // remove the user from the map
+		fds.erase(fds.begin() + i); // remove the user from the pollfd list
 		// i--;
 		return;
 	}
 
 	buffer[bytesRead] = '\0'; // null-terminate the buffer
 	std::string	message(buffer);
-	std::cout << "Client " << fds[i].fd << " sent: " << buffer << std::endl;
+	std::cout << "User " << fds[i].fd << " sent: " << buffer << std::endl;
 
-	handleClientCommand(fds[i].fd, message);
+	handleUserCommand(fds[i].fd, message);
 }
 
-void	Server::handleClientCommand(int clientSocket, const std::string& message)
+void	Server::handleUserCommand(int userSocket, const std::string& message)
 {
 	std::istringstream	iss(message);
 	std::string			command;
@@ -239,14 +239,14 @@ void	Server::handleClientCommand(int clientSocket, const std::string& message)
 		std::string	channelName;
 		iss >> channelName;
 		std::cout << channelName << std::endl;
-		_commands.join(clientSocket, channelName);
+		_commands.join(userSocket, channelName);
 	}
 	else if (command == "NICK")
 	{
 		std::cout << RED << "NICK" << std::endl << RESET;
 		std::string	nickName;
 		iss >> nickName;
-		_commands.nick(clientSocket, message);
+		_commands.nick(userSocket, message);
 	}
 	else if (command == "KICK")
 		(void)command;
@@ -257,9 +257,9 @@ void	Server::handleClientCommand(int clientSocket, const std::string& message)
 	else if (command == "MODE")
 		(void)command;
 	else if (command == "QUIT")
-		_commands.quit(clientSocket);
+		_commands.quit(userSocket);
 	else if (command == "PART") // part == leave channel
-		_commands.part(clientSocket, message);
+		_commands.part(userSocket, message);
 	else
 		(void)command; //unkown command
 

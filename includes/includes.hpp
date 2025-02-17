@@ -23,7 +23,7 @@
 // Custom includes
 
 #include "Server.hpp"
-#include "Client.hpp"
+#include "User.hpp"
 #include "Channel.hpp"
 #include "Commands.hpp"
 #include "replies.hpp"

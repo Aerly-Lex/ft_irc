@@ -6,7 +6,7 @@ CXXFLAGS	= -std=c++17 #-Wall -Werror -Wextra -std=c++17 -Iincludes
 
 SRC			=	srcs/main.cpp \
 				srcs/Server.cpp \
-				srcs/Client.cpp \
+				srcs/User.cpp \
 				srcs/Channel.cpp \
 				srcs/Utilities.cpp
 

@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:09:28 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/12 13:11:02 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:18:27 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "includes.hpp"
 #include "Commands.hpp"
 
-class Client;
+class User;
 class Channel;
 // class Commands;
 
@@ -27,7 +27,7 @@ class Server
 		std::string						_password;
 		std::vector<pollfd>				_fds;
 
-		std::map<int, Client>			_clients;
+		std::map<int, User>				_users;
 		std::map<std::string, Channel>	_channels;
 		Commands						_commands;
 
@@ -42,7 +42,7 @@ class Server
 		int								getSocket() const;
 		int								getPort() const;
 		std::string						getPassword() const;
-		std::map<int, Client>&			getClients();
+		std::map<int, User>&			getUsers();
 		std::map<std::string, Channel>&	getChannels();
 
 		// Class methods
@@ -50,7 +50,7 @@ class Server
 		void			initServer();
 		void			run();
 
-		void	acceptNewCients(std::vector<pollfd>& fds);
-		void	handleClientMessage(std::vector<pollfd>& fds, int i);
-		void	handleClientCommand(int clientSocket, const std::string& message);
+		void	acceptNewUsers(std::vector<pollfd>& fds);
+		void	handleUserMessage(std::vector<pollfd>& fds, int i);
+		void	handleUserCommand(int clientSocket, const std::string& message);
 };

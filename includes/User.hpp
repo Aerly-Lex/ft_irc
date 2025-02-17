@@ -2,7 +2,7 @@
 
 #include "includes.hpp"
 
-class Client
+class User
 {
 	public:
 		int				_socket;
@@ -16,7 +16,7 @@ class Client
 
 		bool			_registered;
 
-		Client() : _socket(-1) {}
-		Client(int socket) : _socket(socket) {}
-		~Client() {}
+		User() : _socket(-1) {}
+		User(int socket) : _socket(socket) {}
+		~User() {}
 };
