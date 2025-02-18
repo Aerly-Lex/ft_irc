@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:02:20 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/17 12:40:42 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/18 14:53:27 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void	Commands::join(int userSocket, const std::string& channelName)
 
 	// Send JOIN message to client
 	// std::string	joinMsg = ":" + _clients[clientSocket]._nickName + " JOIN :" + channelName + CRLF;
-	std::cout << _users[userSocket]._nickName + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName + " JOIN :" + channelName << std::endl;
-	std::string joinMsg = RPL_JOINMSG(_users[userSocket]._nickName, _users[userSocket]._userName, _users[userSocket]._hostName, channelName);
+	std::cout << _users[userSocket]._nickname + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName + " JOIN :" + channelName << std::endl;
+	std::string joinMsg = RPL_JOINMSG(_users[userSocket]._nickname, _users[userSocket]._userName, _users[userSocket]._hostName, channelName);
 	std::cout << RED << joinMsg << std::endl << RESET;
 	send(userSocket, joinMsg.c_str(), joinMsg.size(), 0);
 

@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/18 12:58:29 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/18 15:36:20 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 	// create a new User object and add to map
 	User	newUser(userSocket);
 	newUser._socket = userSocket;
-	newUser._nickName = "Nick" + std::to_string(userSocket);
+	newUser._nickname = "Nick" + std::to_string(userSocket);
 	newUser._userName = "";
 	newUser._realName = "";
 	newUser._password = "";
@@ -171,16 +171,16 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 
 
 	/////test
-	std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickName);
+	std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickname);
 	send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
 	// 002 - Host info
-	std::string yourHost = ":irc.server.com 002 " + newUser._nickName + " :Your host is irc.server.com  running version 1.0" + CRLF;
+	std::string yourHost = ":irc.server.com 002 " + newUser._nickname + " :Your host is irc.server.com  running version 1.0" + CRLF;
 
 	// 003 - Server creation time
-	std::string created = ":irc.server.com 003 " + newUser._nickName + " :This server was created today" + CRLF;
+	std::string created = ":irc.server.com 003 " + newUser._nickname + " :This server was created today" + CRLF;
 
 	// 004 - Server details
-	std::string myInfo = ":irc.server.com 004 " + newUser._nickName + " irc.server.com 1.0 iov" + CRLF;
+	std::string myInfo = ":irc.server.com 004 " + newUser._nickname + " irc.server.com 1.0 iov" + CRLF;
 
 	// send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
 	send(userSocket, yourHost.c_str(), yourHost.size(), 0);
@@ -222,7 +222,10 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 
 	std::cout << MAGENTA <<  "\t#Test#Message: " << message << std::endl;
 	std::cout << "\t#Test#Command: " << command << std::endl << RESET;
-	if (command == "JOIN")
+
+	if (command == "CAP")
+		_commands.cap(userSocket, message);
+	else if (command == "JOIN")
 	{
 		std::cout << MAGENTA << "JOIN" << std::endl << RESET;
 		std::string	channelName;
@@ -232,9 +235,9 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	}
 	else if (command == "NICK")
 	{
-		std::cout << MAGENTA << "NICK" << std::endl << RESET;
 		std::string	nickName;
 		iss >> nickName;
+		std::cout << MAGENTA << "NICK: " << nickName << std::endl << RESET;
 		_commands.nick(userSocket, nickName);
 	}
 	else if (command == "PING")
@@ -258,41 +261,4 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		_commands.part(userSocket, message);
 	else
 		(void)command; //unkown command
-
-	// else if (command == "USER") {
-	// 	std::string userName, realName;
-	// 	iss >> userName;
-	// 	iss.ignore(256, ' '); // Ignoriere den Hostnamen
-	// 	iss.ignore(256, ' '); // Ignoriere den Servernamen
-	// 	std::getline(iss, realName, ':'); // Realname beginnt nach dem Doppelpunkt
-	// 	// _commands.user(fds[i].fd, userName, realName);
-	// }
-
-
 }
-
-//      int poll(struct pollfd fds[], nfds_t nfds, int timeout);
-// DESCRIPTION
-//      poll() examines a set of file descriptors to see if some of them are ready for I/O or if certain events have occurred on them.  The fds argument is a pointer to an
-//      array of pollfd structures, as defined in <poll.h> (shown below).  The nfds argument specifies the size of the fds array.
-
-//      struct pollfd {
-//          int    fd;       /* file descriptor */
-//          short  events;   /* events to look for */
-//          short  revents;  /* events returned */
-//      };
-
-//      The fields of struct pollfd are as follows:
-
-//      fd             File descriptor to poll.
-
-//      events         Events to poll for.  (See below.)
-
-//      revents        Events which may occur or have occurred.  (See below.)
-
-//      If timeout is greater than zero, it specifies a maximum interval (in milliseconds) to wait for any file descriptor to become ready.  If timeout is zero, then poll()
-//      will return without blocking. If the value of timeout is -1, the poll blocks indefinitely.
-
-// RETURN VALUES
-//      poll() returns the number of descriptors that are ready for I/O, or -1 if an error occurred.  If the time limit expires, poll() returns 0.  If poll() returns with an
-//      error, including one due to an interrupted call, the fds array will be unmodified and the global variable errno will be set to indicate the error.

@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/18 12:56:33 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/18 15:37:06 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ int	main(int argc, char **argv)
 }
 /*
 Daniel ToDo:
-fixing nick
+implement CAP
+slim handleUserMessage function! too many repetitives...
 
 
 Alex ToDo:
