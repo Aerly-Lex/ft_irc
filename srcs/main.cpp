@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/17 11:51:32 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/18 12:56:33 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,23 @@ int	main(int argc, char **argv)
 	return 0;
 }
 /*
+Daniel ToDo:
+fixing nick
+
+
+Alex ToDo:
+implement own send function and replace everywhere, fuck this typting c_str(), size everytime - perhaps as a method in server class
+implement the replies (commented in includes/replies.hpp) (NICK, JOIN, PING, etc.)), everthing with 3x!!!
+
+
 ALLOWED FUNCTIONS, among others:
 setsockopt, getsockname,
 getprotobyname, gethostbyname, getaddrinfo,
 freeaddrinfo, connect, accept, htons,
-htonl, ntohs, ntohl, inet_addr, inet_ntoa, send,
+htonl, ntohs, ntohl, inet_addr, inet_ntoa,
 sigaction, lseek, fstat, fcntl,
 USED:
-socket, close, bind, listen, poll, recv, signal
+socket, close, bind, listen, poll, recv, signal, send,
 
 REQUIREMENTS:
 > Server must handle multiple clients at the same time and never hang

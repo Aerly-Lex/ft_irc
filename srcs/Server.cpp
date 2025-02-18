@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/17 12:50:55 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/18 12:58:29 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,35 +170,6 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 	fds.push_back(user_fd);
 
 
-	// create a general channel if it doesn't exist
-	// if (_channels.empty())
-	// {
-	// 	Channel	defaultChannel("general");
-	// 	_channels["general"] = defaultChannel;
-
-	// 	_channels["general"].members.push_back(userSocket);
-
-	// 	std::cout << GREEN << "New user connected: " << userSocket << std::endl << RESET;
-	// 	std::cout << "Total user: " << fds.size() - 1 << std::endl;
-
-	// 	std::string welcomeMessage = RPL_WELCOME(_users[userSocket]._nickName);
-	// 	send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-
-	// 	std::string	memberList = "Members in #general: ";
-	// 	for (int member : _channels["general"].members)
-	// 		memberList += std::to_string(member) + " ";
-	// 	memberList += "\r\n";
-	// 	send(userSocket, memberList.c_str(), memberList.size(), 0);
-
-	// 	// _channels["general"] = Channel("general");
-	// 	// std::cout << GREEN << "Created channel: general" << std::endl << RESET;
-	// 	// std::string joinMessage = ":127.0.0.1 MODE #test +o Nickname2";
-	// 	// send(userSocket, joinMessage.c_str(), joinMessage.size(), 0);
-	// // :127.0.0.1 MODE #test +o Nickname2
-	// 	// send(userSocket, joinMessage.c_str(), joinMessage.size(), 0);
-	// }
-	// std::string welcomeMessage = ":irc.server.com 001 " + newUser._nickName + " :Welcome to the 42 IRC server!\r\n";
-
 	/////test
 	std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickName);
 	send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
@@ -264,7 +235,7 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		std::cout << MAGENTA << "NICK" << std::endl << RESET;
 		std::string	nickName;
 		iss >> nickName;
-		_commands.nick(userSocket, message);
+		_commands.nick(userSocket, nickName);
 	}
 	else if (command == "PING")
 	{
