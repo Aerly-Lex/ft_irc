@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/18 15:36:20 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/19 13:46:27 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,9 +157,10 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 	newUser._userName = "";
 	newUser._realName = "";
 	newUser._password = "";
-	// newUser._hostName = inet_ntoa(clientAddr.sin_addr); // saving IP-Adress as hostname
-	newUser._hostName = "";
-	// newUser._ipAddress = inet_ntoa(clientAddr.sin_addr); // saving IP-Adress
+	newUser._hostName = inet_ntoa(userAddr.sin_addr); // saving IP-Adress as hostname
+	// newUser._hostName = "";
+
+	// newUser._ipAddress = inet_ntoa(userAddr.sin_addr); // saving IP-Adress
 	newUser._registered = false;
 	_users[userSocket] = newUser;
 
@@ -170,23 +171,23 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 	fds.push_back(user_fd);
 
 
-	/////test
-	std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickname);
-	send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-	// 002 - Host info
-	std::string yourHost = ":irc.server.com 002 " + newUser._nickname + " :Your host is irc.server.com  running version 1.0" + CRLF;
-
-	// 003 - Server creation time
-	std::string created = ":irc.server.com 003 " + newUser._nickname + " :This server was created today" + CRLF;
-
-	// 004 - Server details
-	std::string myInfo = ":irc.server.com 004 " + newUser._nickname + " irc.server.com 1.0 iov" + CRLF;
-
+	// /////test
+	// std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickname);
 	// send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-	send(userSocket, yourHost.c_str(), yourHost.size(), 0);
-	send(userSocket, created.c_str(), created.size(), 0);
-	send(userSocket, myInfo.c_str(), myInfo.size(), 0);
-	/////test
+	// // 002 - Host info
+	// std::string yourHost = ":irc.server.com 002 " + newUser._nickname + " :Your host is irc.server.com  running version 1.0" + CRLF;
+
+	// // 003 - Server creation time
+	// std::string created = ":irc.server.com 003 " + newUser._nickname + " :This server was created today" + CRLF;
+
+	// // 004 - Server details
+	// std::string myInfo = ":irc.server.com 004 " + newUser._nickname + " irc.server.com 1.0 iov" + CRLF;
+
+	// // send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+	// send(userSocket, yourHost.c_str(), yourHost.size(), 0);
+	// send(userSocket, created.c_str(), created.size(), 0);
+	// send(userSocket, myInfo.c_str(), myInfo.size(), 0);
+	// /////test
 
 	std::cout << "New User connected: " << userSocket << std::endl;
 	std::cout << "Total Users: " << fds.size() - 1 << std::endl;
@@ -195,7 +196,7 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 void	Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 {
 	char	buffer[1024] = {0};
-	int		bytesRead = recv(fds[i].fd, buffer, 1024, 0);
+	int		bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
 
 	if (bytesRead <= 0) // 0 for disconnection, -1 for error
 	{
@@ -209,7 +210,7 @@ void	Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 
 	buffer[bytesRead] = '\0'; // null-terminate the buffer
 	std::string	message(buffer);
-	std::cout << "User " << fds[i].fd << " sent: " << buffer << std::endl;
+	std::cout << "User " << fds[i].fd << " sent: " << message << std::endl;
 
 	handleUserCommand(fds[i].fd, message);
 }
@@ -223,7 +224,7 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	std::cout << MAGENTA <<  "\t#Test#Message: " << message << std::endl;
 	std::cout << "\t#Test#Command: " << command << std::endl << RESET;
 
-	if (command == "CAP")
+	if (command == "CAP" || _users[userSocket]._loginProcess == "END")
 		_commands.cap(userSocket, message);
 	else if (command == "JOIN")
 	{
