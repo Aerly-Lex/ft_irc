@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aweissha <aweissha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/18 12:58:29 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/02/24 17:18:19 by aweissha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 
 	/////test
 	std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickName);
-	send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+	customSend(userSocket, welcomeMessage);
 	// 002 - Host info
 	std::string yourHost = ":irc.server.com 002 " + newUser._nickName + " :Your host is irc.server.com  running version 1.0" + CRLF;
 
@@ -183,9 +183,9 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 	std::string myInfo = ":irc.server.com 004 " + newUser._nickName + " irc.server.com 1.0 iov" + CRLF;
 
 	// send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-	send(userSocket, yourHost.c_str(), yourHost.size(), 0);
-	send(userSocket, created.c_str(), created.size(), 0);
-	send(userSocket, myInfo.c_str(), myInfo.size(), 0);
+	customSend(userSocket, yourHost);
+	customSend(userSocket, created);
+	customSend(userSocket, myInfo);
 	/////test
 
 	std::cout << "New User connected: " << userSocket << std::endl;

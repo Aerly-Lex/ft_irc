@@ -1,22 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Utilities.cpp                                      :+:      :+:    :+:   */
+/*   Utilities.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aweissha <aweissha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/30 12:03:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/24 17:10:18 by aweissha         ###   ########.fr       */
+/*   Created: 2025/02/24 16:55:38 by aweissha          #+#    #+#             */
+/*   Updated: 2025/02/24 17:07:24 by aweissha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/includes.hpp"
+#pragma once
 
-// trim whitespaces, strings etc. for the parsing
+#include "includes.hpp"
 
-void customSend(int sockfd, std::string& string)
-{
-	ssize_t bytesSent = send(sockfd, string.c_str(), string.size(), 0);
-	if (bytesSent == -1)
-		throw std::runtime_error("Error sending message");
-}
+void customSend(int sockfd, std::string& string);
