@@ -10,7 +10,8 @@ SRC			=	srcs/main.cpp \
 				srcs/Channel.cpp \
 				srcs/Utilities.cpp
 
-CMDS		=	srcs/commands/Commands.cpp \
+CMDS		=	srcs/commands/cap.cpp \
+				srcs/commands/Commands.cpp \
 				srcs/commands/invite.cpp \
 				srcs/commands/mode.cpp \
 				srcs/commands/nick.cpp \
