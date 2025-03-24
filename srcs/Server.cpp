@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/19 13:46:27 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:48:56 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,18 @@ void		Server::initServer()
 	serverAddress.sin_addr.s_addr = INADDR_ANY; // INADDR_ANY: any address for binding
 	serverAddress.sin_port = htons(_port); // htons: host to network short converts values between host and network (network-format)
 
+	//this makes sure we can reuse the adress/port after it closes instead of waiting for a timeout.
+	int re = 1;
+	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &re, sizeof(re)) == -1)
+		throw(std::runtime_error("ERROR: setsockopt failed"));
+
 //	int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 	if (bind(_socket, (sockaddr*)&serverAddress, sizeof(serverAddress)) == -1)
 		throw std::runtime_error("Failed to bind the socket to the address");
 
+	//making it nonblocking on MacOS:
+	if (fcntl(_socket, F_SETFL, O_NONBLOCK) == -1)
+		throw(std::runtime_error("ERROR: fcntl failed"));
 
 //	int listen(int sockfd, int backlog);
 //	backlog: The maximum length queue of pending connections for sockfd may grow.
