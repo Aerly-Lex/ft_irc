@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/03/24 15:48:56 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/02 13:02:23 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ bool	Server::Signal = false;
 //				Constructor				//
 //////////////////////////////////////////
 
-Server::Server(int port, std::string password)
-: _port(port), _password(password), _commands(*this)
+Server::Server(int port, std::string password) : _port(port), _password(password), _commands(*this)
 {
 
 }
@@ -270,4 +269,12 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		_commands.part(userSocket, message);
 	else
 		(void)command; //unkown command
+}
+
+void Server::sendTo(int fd, const std::string &message)
+{
+	if (send(fd, message.c_str(), message.size(), 0) == -1)
+	{
+		std::cerr << "Failed to send to fd: " << fd << std::endl;
+	}
 }

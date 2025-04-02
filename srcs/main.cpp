@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/03/24 13:45:32 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/01 14:27:40 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	main(int argc, char **argv)
 
 	if (argc != 3)
 		return (std::cerr << invalidArguments), 1;
-	if (!checkPorts(argv[1], &port) )
+	if (!checkPorts(argv[1], &port))
 		return (std::cerr << invalidPort), 1;
 
 	try
