@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cap.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/19 13:57:39 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/02 13:07:07 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	Commands::cap(int userSocket, const std::string& message)
 		std::cout << GREEN << "LS" << std::endl << RESET;
 
 		std::string	capResponse = "CAP * LS :multi-prefix sasl\r\n";
-		send(userSocket, capResponse.c_str(), capResponse.size(), 0);
+		_server.sendTo(userSocket, capResponse);
 		return;
 	}
 	else if (subCommand == "REQ")
@@ -41,7 +41,7 @@ void	Commands::cap(int userSocket, const std::string& message)
 		std::cout << GREEN << "REQ" << std::endl << RESET;
 		std::getline(iss, params);
 		std::string	capResponse = "CAP * ACK " + params + "\r\n";
-		send(userSocket, capResponse.c_str(), capResponse.size(), 0);
+		_server.sendTo(userSocket, capResponse);
 		return;
 	}
 	else if (subCommand == "END")
@@ -65,7 +65,7 @@ void	Commands::cap(int userSocket, const std::string& message)
 
 	/////test
 	std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickname);
-	send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+	_server.sendTo(userSocket, welcomeMessage);
 
 	// 002 - Host info
 	std::string yourHost = ":irc.server.com 002 " + _users[userSocket]._nickname + " :Your host is irc.server.com  running version 1.0" + CRLF;
@@ -77,9 +77,9 @@ void	Commands::cap(int userSocket, const std::string& message)
 	std::string myInfo = ":irc.server.com 004 " + _users[userSocket]._nickname + " irc.server.com 1.0 iov" + CRLF;
 
 	// send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-	send(userSocket, yourHost.c_str(), yourHost.size(), 0);
-	send(userSocket, created.c_str(), created.size(), 0);
-	send(userSocket, myInfo.c_str(), myInfo.size(), 0);
+	_server.sendTo(userSocket, yourHost);
+	_server.sendTo(userSocket, created);
+	_server.sendTo(userSocket, myInfo);
 	/////test
 
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:02:20 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/18 14:53:27 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/02 13:07:34 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	Commands::join(int userSocket, const std::string& channelName)
 	std::cout << _users[userSocket]._nickname + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName + " JOIN :" + channelName << std::endl;
 	std::string joinMsg = RPL_JOINMSG(_users[userSocket]._nickname, _users[userSocket]._userName, _users[userSocket]._hostName, channelName);
 	std::cout << RED << joinMsg << std::endl << RESET;
-	send(userSocket, joinMsg.c_str(), joinMsg.size(), 0);
+	_server.sendTo(userSocket, joinMsg);
 
 	// Send JOIN message to all other clients in channel
 
