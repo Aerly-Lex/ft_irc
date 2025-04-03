@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/03 16:58:08 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/03 17:54:38 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,7 @@ void	Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 
 	buffer[bytesRead] = '\0'; // null-terminate the buffer
 	std::string	message(buffer);
-	std::cout << "User " << fds[i].fd << " sent: " << message << std::endl;
+	std::cout << "User " << _users[fds[i].fd]._nickname << " sent: " << message << std::endl;
 
 	handleUserCommand(fds[i].fd, message);
 }
