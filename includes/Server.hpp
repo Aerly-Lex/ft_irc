@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:09:28 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/02 13:00:11 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/03 16:58:19 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Server
 		std::map<std::string, Channel>	_channels;
 		Commands						_commands;
 
+		std::chrono::system_clock::time_point	_creationTime;
 		static bool	Signal;
 
 	public:
@@ -42,6 +43,7 @@ class Server
 		int								getSocket() const;
 		int								getPort() const;
 		std::string						getPassword() const;
+		std::string						getCreationTime() const;
 		std::map<int, User>&			getUsers();
 		std::map<std::string, Channel>&	getChannels();
 
@@ -54,4 +56,5 @@ class Server
 		void	handleUserMessage(std::vector<pollfd>& fds, int i);
 		void	handleUserCommand(int clientSocket, const std::string& message);
 		void	sendTo(int fd, const std::string &message);
+		void	welcomeMsg(int userSocket) const;
 };

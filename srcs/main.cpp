@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/01 14:27:40 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/03 14:34:34 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,11 @@ int	main(int argc, char **argv)
 }
 /*
 Daniel ToDo:
-implement CAP
-slim handleUserMessage function! too many repetitives...
-
+Chillen.
 
 Sören/Chris ToDo:
-implement own send function and replace everywhere, fuck this typting c_str(), size everytime - perhaps as a method in server class
+implement CAP
+slim handleUserMessage function! too many repetitives...
 implement the replies (commented in includes/replies.hpp) (NICK, JOIN, PING, etc.)), everthing with 3x!!!
 
 

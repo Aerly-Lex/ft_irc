@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/02 13:02:23 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/03 16:58:08 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ bool	Server::Signal = false;
 //				Constructor				//
 //////////////////////////////////////////
 
-Server::Server(int port, std::string password) : _port(port), _password(password), _commands(*this)
+Server::Server(int port, std::string password) : _port(port), _password(password), _commands(*this), _creationTime(std::chrono::system_clock::now())
 {
 
 }
@@ -52,6 +52,14 @@ std::string		Server::getPassword() const
 	return (_password);
 }
 
+std::string		Server::getCreationTime() const
+{
+	std::time_t now = std::chrono::system_clock::to_time_t(_creationTime);
+	std::string timeStr = std::ctime(&now);
+	timeStr.pop_back();
+	return timeStr;
+}
+
 std::map<int, User>&			Server::getUsers()
 {
 	return (_users);
@@ -66,6 +74,13 @@ std::map<std::string, Channel>&	Server::getChannels()
 //////////////////////////////////////////
 //				class methods			//
 //////////////////////////////////////////
+
+void	Server::welcomeMsg(int userSocket)
+{
+	sendTo(userSocket, RPL_WELCOME(_users[userSocket]._nickname));
+	sendTo(userSocket, RPL_YOURHOST(_users[userSocket]._nickname));
+	sendTo(userSocket, RPL_CREATED(_users[userSocket]._nickname, getCreationTime()));
+}
 
 void	Server::signalHandler(int signum)
 {
@@ -268,7 +283,7 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	else if (command == "PART") // part == leave channel
 		_commands.part(userSocket, message);
 	else
-		(void)command; //unkown command
+		(void)command; //unkown command RPL 421
 }
 
 void Server::sendTo(int fd, const std::string &message)

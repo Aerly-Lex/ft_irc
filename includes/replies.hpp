@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/19 15:08:40 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/03 16:51:57 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,23 @@
 // Carriage Return Line Feed - for network communication
 #define CRLF "\r\n"
 
-#define RPL_WELCOME(nick) (": 001" + nick + " :The 42 IRC server project presented by Alex & Daniel" + CRLF)
+#define SRV_NAME "IRC_GANG"
+
+#define RPL_WELCOME(nick) (":" + std::string(SRV_NAME) + " 001 " + nick + " :The 42 IRC server project presented by Sören, Chris & Daniel" + CRLF)
 
 // !!!002 (RPL_YOURHOST) - info about server
 // !!!003 (RPL_CREATED) - server creation date
 // !!!004 (RPL_MYINFO) - server detail
+// 002 - Host info
+#define RPL_YOURHOST(nick) (":" + std::string(SRV_NAME) + " 002 " + nick + " :Your host is " + std::string(SRV_NAME) + " running version 1.0" + CRLF)
+
+// 003 - Server creation time
+#define RPL_CREATED(nick, created) (":" + std::string(SRV_NAME) + " 003 " + std::string(nick) + " :This server was created at: " + std::string(created) + CRLF)
+
+
+// 004 - Server details
+// #define RPL_MYINFO(nick) (":" std::string(SRV_NAME) + " 004 " + nick + " :")
+// std::string myInfo = ":irc.server.com 004 " + _users[userSocket]._nickname + " irc.server.com 1.0 iov" + CRLF;
 
 // // send PONG on incoming PING
 #define RPL_PONG(nickname, hostname) ("PONG" + nickname + " " + hostname + CRLF)
