@@ -3,38 +3,120 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/13 12:52:42 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/04 17:01:45 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/includes.hpp"
 
-Channel::Channel()
-{
-
-}
+Channel::Channel() {}
 
 Channel::Channel(const std::string& name) : _name(name)
 {
 	_topic = "";
 	_password = "";
 	_mode = "";
-	passwordProtected = false;
 	inviteOnly = false;
+	
 }
 
 Channel::~Channel()
 {
-
 }
 
-// void	Channel::addMember(int clientSocket)
-// {
-// 	_members.push_back(clientSocket);
-// }
+std::string	Channel::getName() const
+{
+	return _name;
+}
+std::string	Channel::getTopic() const
+{
+	return _topic;
+}
+std::string	Channel::getPass() const
+{
+	return _password;
+}
+std::string	Channel::getMode() const
+{
+	return _mode;
+}
+
+void	Channel::setName(std::string &name)
+{
+	_name = name;
+}
+void	Channel::setMode(std::string &mode)
+{
+	_mode = mode;
+}
+void	Channel::setPass(std::string &password)
+{
+	_password = password;
+}
+void	Channel::setTopic(std::string &topic)
+{
+	_topic = topic;
+}
+
+bool	Channel::isBanned(const std::string &nick) const
+{
+	if (std::find(_banned.begin(), _banned.end(), nick) != _banned.end())
+		return true;
+	return false;
+}
+
+void	Channel::addMember(int userSocket, std::string &nick)
+{
+	if (_members.size() == 0)
+	{
+		_members[userSocket] = nick;
+		_operators[userSocket] = nick;
+	}
+	else if (_members.find(userSocket) == _members.end()
+			&& isBanned(nick) == false)
+		_members[userSocket] = nick;
+	else
+		return ;
+}
+
+void	Channel::removeMember(int userSocket)
+{
+	if (_members.find(userSocket) != _members.end())
+	{
+		_members[userSocket].erase();
+		if (_operators.find(userSocket) != _members.end())
+			_operators[userSocket].erase();
+	}
+}
+
+void	Channel::banUser(std::string &nick)
+{
+	_banned.push_back(nick);
+	for (auto it = _members.begin(); it != _members.end(); it++)
+	{
+		if (it->second == nick)
+		{
+			_members.erase(it);
+			_operators.erase(it->first);
+			it = _members.begin();
+		}
+	}
+}
+
+void	Channel::removeOperator(int userSocket)
+{
+	if (_operators.find(userSocket) == _operators.end())
+		_operators[userSocket].erase();
+}
+
+void	Channel::addOperator(int userSocket, std::string &nick)
+{
+	if (_operators.find(userSocket) != _operators.end())
+		_operators[userSocket] = nick;
+}
 
 // void	Channel::removeMember(int clientSocket)
 // {

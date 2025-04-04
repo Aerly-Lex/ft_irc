@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:02:20 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/02 13:07:34 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/04 16:58:24 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,13 @@
 void	Commands::join(int userSocket, const std::string& channelName)
 {
 	// Check if channel exists, if not create it
-	if (_server.getChannels().find(channelName) == _server.getChannels().end())
+	if (_channels.find(channelName) == _channels.end())
 	{
 		Channel	newChannel(channelName);
-		newChannel._name = channelName;
-		_server.getChannels()[channelName] = newChannel;
+		_channels[channelName] = newChannel;
 	}
 	// Add client to channel
-	_server.getChannels()[channelName].members.push_back(userSocket);
+	_channels[channelName].addMember(userSocket, _users[userSocket]._nickname);
 
 	// Send JOIN message to client
 	// std::string	joinMsg = ":" + _clients[clientSocket]._nickName + " JOIN :" + channelName + CRLF;
