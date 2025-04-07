@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/03 16:51:57 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/07 15:16:19 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,12 @@
 // // send PONG on incoming PING
 #define RPL_PONG(nickname, hostname) ("PONG" + nickname + " " + hostname + CRLF)
 
-// RPL_NAMREPLY (353) ??
+
+#define RPL_JOINMSG(nickname, username, hostname, channel) (":" + nickname + "!" + username + "@" + hostname + " JOIN " + channel + CRLF)
+#define RPL_TOPIC(nickname, channelname, topic) (":" + std::string(SRV_NAME) + " 332 " + nickname + " " + channelname + " :" + topic + CRLF)
+// RPL_NAMREPLY (353) sends a list of all members of the channel
+#define RPL_NAMREPLY(nickname, channelname, names) (":" + std::string(SRV_NAME) + " 353 " + nickname + " = " + channelname + " :" + names + CRLF)
 //Sent as a reply to the NAMES command, this numeric lists the clients that are joined to <channel> and their status in that channel.
-#define RPL_JOINMSG(nickname, username, hostname, channel) (std::string(":") + nickname + "!" + username + "@" + hostname + " JOIN " + channel + CRLF)
 //RPL_ENDOFNAMES (366) ??
 //   "<client> <channel> :End of /NAMES list"
 // Sent as a reply to the NAMES command, this numeric specifies the end of a list of channel member names.

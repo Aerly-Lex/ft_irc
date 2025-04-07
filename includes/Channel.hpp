@@ -26,6 +26,7 @@ class Channel
 		std::string		getTopic() const;
 		std::string		getPass() const;
 		std::string		getMode() const;
+		std::string		getNames() const;
 
 		void			setName(std::string &name);
 		void			setTopic(std::string &topic);
