@@ -13,6 +13,7 @@ class User
 		std::string		_hostName;
 		std::string		_ipAddress;
 		std::string		_recvMesg;
+		std::string		_mask;
 
 		bool			_registered;
 		std::string		_loginProcess;

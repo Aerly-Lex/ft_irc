@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 15:21:26 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/07 17:32:20 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,10 @@ bool	Channel::isBanned(const std::string &nick) const
 void	Channel::addMember(int userSocket, std::string &nick)
 {
 	if (_members.size() == 0 && _operators.size() == 0)
+	{
 		_operators[userSocket] = nick;
+		_members[userSocket] = nick;
+	}
 	else if (_members.find(userSocket) == _members.end()
 			&& isBanned(nick) == false)
 		_members[userSocket] = nick;
@@ -126,6 +129,17 @@ std::string Channel::getNames() const
 	}
 	return namelist;
 }
+
+void Channel::broadcast(int userSocket, std::string Msg)
+{
+	for (auto it = _members.begin(); it != _members.end(); it++)
+	{
+		if (userSocket != it->first)
+			sendTo(it->first, Msg);
+	}
+}
+
+
 
 // void	Channel::removeMember(int clientSocket)
 // {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 10:26:28 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/02 13:09:49 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/07 17:39:51 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	Commands::nick(int userSocket, const std::string& newNickname)
 	// send NICK changes message to client
 	std::cout << "User " << userSocket << " set nickname to: " << newNickname << std::endl;
 	std::cout << MAGENTA << "SENDING TO CLIENT: " << RPL_NICKCHANGE(oldNickname, newNickname) << std::endl << RESET;
-	_server.sendTo(userSocket, RPL_NICKCHANGE(oldNickname, newNickname));
+	sendTo(userSocket, RPL_NICKCHANGE(oldNickname, newNickname));
 
 	// prob broadcast to all channels
 	for (std::map<int, User>::iterator it = _users.begin(); it != _users.end(); ++it)
@@ -64,7 +64,7 @@ void	Commands::nick(int userSocket, const std::string& newNickname)
 		if (it->first != userSocket)
 		{
 			std::cout << MAGENTA << "SENDING TO USERS: " << RPL_NICKCHANGE(oldNickname, newNickname) << std::endl << RESET;
-			_server.sendTo(it->first, RPL_NICKCHANGE(oldNickname, newNickname));
+			sendTo(it->first, RPL_NICKCHANGE(oldNickname, newNickname));
 		}
 	}
 }

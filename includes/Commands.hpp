@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:31:17 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/02/18 15:27:19 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:30:17 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,6 @@ class Commands
 		void	part(int userSocket, const std::string& channelName);
 		void	ping(int userSocket);
 		void	quit(int userSocket);
+		void	privmsg(int userSocket, std::string userMask, std::string channel, std::string message);
 		//topic
 };

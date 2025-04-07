@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/03 18:11:30 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/07 18:01:15 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	Commands::cap(int userSocket, const std::string& message)
 		std::cout << GREEN << "LS" << std::endl << RESET;
 
 		std::string	capResponse = "CAP * LS :multi-prefix sasl\r\n";
-		_server.sendTo(userSocket, capResponse);
+		sendTo(userSocket, capResponse);
 		return;
 	}
 	else if (subCommand == "REQ")
@@ -43,16 +43,17 @@ void	Commands::cap(int userSocket, const std::string& message)
 		// gescheit Parsen
 		std::getline(iss, params);
 		std::string	capResponse = "CAP * ACK :multi-prefix\r\n"; // Andere Response möglich ??? oer msus das
-		_server.sendTo(userSocket, capResponse);
+		sendTo(userSocket, capResponse);
 		return;
 	}
 	else if (subCommand == "END")
 	{
 		std::cout << GREEN << "END" << std::endl << RESET;
 		iss >> _users[userSocket]._password >> tmp >> _users[userSocket]._nickname;
-		iss >> tmp >> _users[userSocket]._userName >> tmp >> tmp >> _users[userSocket]._realName;
+		iss >> tmp >> _users[userSocket]._userName >> tmp >> _users[userSocket]._hostName >> _users[userSocket]._realName;
 		_users[userSocket]._realName.erase(0, 6);
 		_users[userSocket]._password.erase(0, 1);
+		_users[userSocket]._mask = _users[userSocket]._nickname + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName;
 		std::cout << "Nickname: " << _users[userSocket]._nickname << std::endl;
 		std::cout << "Password: " << _users[userSocket]._password << std::endl;
 		std::cout << "Username: " << _users[userSocket]._userName << std::endl;

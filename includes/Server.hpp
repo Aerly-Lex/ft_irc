@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:09:28 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/03 17:24:35 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/07 17:26:30 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ class Server
 		void	acceptNewUsers(std::vector<pollfd>& fds);
 		void	handleUserMessage(std::vector<pollfd>& fds, int i);
 		void	handleUserCommand(int clientSocket, const std::string& message);
-		void	sendTo(int fd, const std::string &message);
 		void	welcomeMsg(int userSocket);
 };
+
+void	sendTo(int fd, const std::string &message);

@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/03 17:54:38 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/07 18:36:47 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,11 +282,18 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		_commands.quit(userSocket);
 	else if (command == "PART") // part == leave channel
 		_commands.part(userSocket, message);
+	else if (command == "PRIVMSG")
+	{
+		std::string channel, message;
+		iss >> channel;
+		message = iss.rdbuf()->str();
+		_commands.privmsg(userSocket, _users[userSocket]._mask, channel, message);
+	}
 	else
 		(void)command; //unkown command RPL 421
 }
 
-void Server::sendTo(int fd, const std::string &message)
+void sendTo(int fd, const std::string &message)
 {
 	if (send(fd, message.c_str(), message.size(), 0) == -1)
 	{

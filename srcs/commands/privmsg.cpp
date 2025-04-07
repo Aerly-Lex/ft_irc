@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ping.cpp                                           :+:      :+:    :+:   */
+/*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/17 12:33:06 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 17:39:55 by stopp            ###   ########.fr       */
+/*   Created: 2025/04/07 18:11:41 by stopp             #+#    #+#             */
+/*   Updated: 2025/04/07 18:30:07 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/includes.hpp"
 
-void	Commands::ping(int userSocket)
+
+void	Commands::privmsg(int userSocket, std::string userMask, std::string channel, std::string message)
 {
-	std::string	pongMsg = RPL_PONG(_users[userSocket]._nickname, "irc.server.com");
-	std::cout << MAGENTA << pongMsg << std::endl << RESET;
-	sendTo(userSocket, pongMsg);
+	_channels[channel].broadcast(userSocket, RPL_PRIVMSG(userMask, channel, message));
 }

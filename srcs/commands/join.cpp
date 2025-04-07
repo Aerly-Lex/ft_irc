@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:02:20 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 15:00:23 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/07 17:31:21 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,26 @@ void	Commands::join(int userSocket, const std::string& channelName)
 	_channels[channelName].addMember(userSocket, _users[userSocket]._nickname);
 
 	// Send JOIN message to client
-	// std::string	joinMsg = ":" + _clients[clientSocket]._nickName + " JOIN :" + channelName + CRLF;
 	std::cout << _users[userSocket]._nickname + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName + " JOIN :" + channelName << std::endl;
 	std::string joinMsg = RPL_JOINMSG(_users[userSocket]._nickname, _users[userSocket]._userName, _users[userSocket]._hostName, channelName);
 	std::cout << RED << joinMsg << std::endl << RESET;
-	_server.sendTo(userSocket, joinMsg);
+	sendTo(userSocket, joinMsg);
+	std::string names;
 	if (_channels[channelName].getTopic() != "")
 	{
-		joinMsg = RPL_TOPIC(_users[userSocket]._nickname, channelName, _channels[channelName].getTopic());
-		_server.sendTo(userSocket, joinMsg);
-		std::cout << RED << joinMsg << std::endl << RESET;
+		names = RPL_TOPIC(_users[userSocket]._nickname, channelName, _channels[channelName].getTopic());
+		sendTo(userSocket, names);
+		std::cout << RED << names << std::endl << RESET;
 	}
-	joinMsg = RPL_NAMREPLY(_users[userSocket]._nickname, channelName, _channels[channelName].getNames());
-	_server.sendTo(userSocket, joinMsg);
-	std::cout << RED << joinMsg << std::endl << RESET;
-	// Send JOIN message to all other clients in channel
+	names = RPL_NAMREPLY(_users[userSocket]._nickname, channelName, _channels[channelName].getNames());
+	sendTo(userSocket, names);
+	std::cout << RED << names << std::endl << RESET;
+	names = RPL_ENDOFNAMES(_users[userSocket]._nickname, channelName);
+	sendTo(userSocket, names);
+	std::cout << RED << names << std::endl << RESET;
 
+	// Send JOIN message to all other clients in channel
+	_channels[channelName].broadcast(userSocket, joinMsg);
 }
 
 // :<nick>!<user>@<host> JOIN :<channel>
