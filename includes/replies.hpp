@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 18:23:03 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 14:12:54 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,10 @@
 #define RPL_WELCOME(nick) (":" + std::string(SRV_NAME) + " 001 " + nick + " :The 42 IRC server project presented by Sören, Chris & Daniel" + CRLF)
 
 // !!!002 (RPL_YOURHOST) - info about server
-// !!!003 (RPL_CREATED) - server creation date
-// !!!004 (RPL_MYINFO) - server detail
-// 002 - Host info
 #define RPL_YOURHOST(nick) (":" + std::string(SRV_NAME) + " 002 " + nick + " :Your host is " + std::string(SRV_NAME) + " running version 1.0" + CRLF)
-
-// 003 - Server creation time
+// !!!003 (RPL_CREATED) - server creation date
 #define RPL_CREATED(nick, created) (":" + std::string(SRV_NAME) + " 003 " + std::string(nick) + " :This server was created at: " + std::string(created) + CRLF)
-
+// !!!004 (RPL_MYINFO) - server detail
 
 // 004 - Server details
 // #define RPL_MYINFO(nick) (":" std::string(SRV_NAME) + " 004 " + nick + " :")
@@ -47,11 +43,7 @@
 #define RPL_NAMREPLY(nickname, channelname, names) (":" + std::string(SRV_NAME) + " 353 " + nickname + " = " + channelname + " :" + names + CRLF)
 // RPL_ENDOFNAMES (366) Ends member list
 #define RPL_ENDOFNAMES(nickname, channelname) (":" + std::string(SRV_NAME) + " 366 " + nickname + " " + channelname + " :END of /NAMES list" + CRLF)
-//Sent as a reply to the NAMES command, this numeric lists the clients that are joined to <channel> and their status in that channel.
-//RPL_ENDOFNAMES (366) ??
-//   "<client> <channel> :End of /NAMES list"
-// Sent as a reply to the NAMES command, this numeric specifies the end of a list of channel member names.
-
+// handles the message coming from a user
 #define RPL_PRIVMSG(userMask, channel, message) (":" + userMask + " PRIVMSG " + channel + " " + message + CRLF)
 
 // NICKnames Stuff
@@ -61,5 +53,7 @@
 // !!!ERR_NOTREGISTERED
 // !!!ERR_NICKNAMEINUSE
 // there is a max len for nick appearantly... 9 chars - didnt test yet
+// 401 - NOSUCHNICK  if there is no such nickname or channel
+#define ERR_NOSUCHNICK(nickname, target) (":" + std::string(SRV_NAME) + " 401 " + nickname + target + " :No such nick/channel" + CRLF)
 
 // cleaned comments, fixed small issue with nick message

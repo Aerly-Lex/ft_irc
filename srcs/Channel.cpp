@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 17:32:20 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 12:50:13 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void	Channel::removeOperator(int userSocket)
 
 void	Channel::addOperator(int userSocket, std::string &nick)
 {
-	if (_operators.find(userSocket) != _operators.end())
+	if (_operators.find(userSocket) == _operators.end())
 		_operators[userSocket] = nick;
 }
 

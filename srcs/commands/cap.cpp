@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 18:01:15 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 14:51:29 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	Commands::cap(int userSocket, const std::string& message)
 		std::cout << GREEN << "END" << std::endl << RESET;
 		iss >> _users[userSocket]._password >> tmp >> _users[userSocket]._nickname;
 		iss >> tmp >> _users[userSocket]._userName >> tmp >> _users[userSocket]._hostName >> _users[userSocket]._realName;
+		if (nickExists)
 		_users[userSocket]._realName.erase(0, 6);
 		_users[userSocket]._password.erase(0, 1);
 		_users[userSocket]._mask = _users[userSocket]._nickname + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName;

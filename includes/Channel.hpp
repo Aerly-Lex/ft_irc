@@ -27,6 +27,7 @@ class Channel
 		std::string			getPass() const;
 		std::string			getMode() const;
 		std::string			getNames() const;
+		
 		void				broadcast(int userSocket, std::string Msg);
 
 		void				setName(std::string &name);

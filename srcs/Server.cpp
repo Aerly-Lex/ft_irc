@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 18:36:47 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 13:50:45 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,6 +236,19 @@ void	Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 
 	handleUserCommand(fds[i].fd, message);
 }
+// finds the target for the message and returns either the userSocket, -1 if its an existing channel or 0 if no target is found
+int		Server::findTarget(const std::string &target)
+{
+	for (auto it = _users.begin(); it != _users.end(); it++)
+	{
+		if (it->second._nickname == target)
+			return (it->first);
+	}
+	if (_channels.find(target) != _channels.end())
+		return (-1);
+	else
+		return (0);
+}
 
 void	Server::handleUserCommand(int userSocket, const std::string& message)
 {
@@ -284,10 +297,10 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		_commands.part(userSocket, message);
 	else if (command == "PRIVMSG")
 	{
-		std::string channel, message;
-		iss >> channel;
+		std::string target, message;
+		iss >> target;
 		message = iss.rdbuf()->str();
-		_commands.privmsg(userSocket, _users[userSocket]._mask, channel, message);
+		_commands.privmsg(userSocket, _users[userSocket]._mask, target, message);
 	}
 	else
 		(void)command; //unkown command RPL 421
