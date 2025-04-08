@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 16:00:14 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 16:09:23 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,7 @@ void Channel::addMember(int userSocket, const std::string &nick) // adds a user 
 
 void Channel::removeMember(int userSocket)
 {
-	std::map<int, std::string>::iterator it = _members.find(userSocket);
-	if (it == _members.end())
-		return;
-	std::string nick = it->second;
-	_members.erase(it);
+	_members.erase(userSocket);
 	_operators.erase(userSocket);
 }
 

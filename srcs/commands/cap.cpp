@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cap.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 16:01:02 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 16:22:52 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ bool	Server::usersExists(std::string nickname)
 			i++;
 		if (i > 1)
 		{
-			removeUserFromAllChannels(it->first);
+			_users.erase(it->second._socket);
 			return true;
 		}
 	}
