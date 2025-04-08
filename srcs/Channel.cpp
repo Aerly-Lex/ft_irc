@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 17:32:20 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 14:06:41 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,36 +61,40 @@ void	Channel::setTopic(std::string &topic)
 	_topic = topic;
 }
 
-bool	Channel::isBanned(const std::string &nick) const
+bool	Channel::isBanned(const std::string &nick) const // checks trough a vector if a "nick" is banned or not
 {
 	if (std::find(_banned.begin(), _banned.end(), nick) != _banned.end())
 		return true;
 	return false;
 }
 
-void	Channel::addMember(int userSocket, std::string &nick)
+bool Channel::nickExists(const std::string &nick) const // checks if a nick is already in the _members map
 {
-	if (_members.size() == 0 && _operators.size() == 0)
-	{
-		_operators[userSocket] = nick;
-		_members[userSocket] = nick;
-	}
-	else if (_members.find(userSocket) == _members.end()
-			&& isBanned(nick) == false)
-		_members[userSocket] = nick;
-	else
-		return ;
+	for (std::map<int, std::string>::const_iterator it = _members.begin(); it != _members.end(); ++it)
+		if (it->second == nick)
+			return true;
+	return false;
 }
 
-void	Channel::removeMember(int userSocket)
+void Channel::addMember(int userSocket, const std::string &nick) // adds a user to the _members map
 {
-	if (_members.find(userSocket) != _members.end())
-	{
-		_members[userSocket].erase();
-		if (_operators.find(userSocket) != _members.end())
-			_operators[userSocket].erase();
-	}
+	if (_members.count(userSocket) || nickExists(nick) || isBanned(nick))
+		return;
+	_members[userSocket] = nick;
+	if (_members.size() == 1 && _operators.empty())
+		_operators[userSocket] = nick;
 }
+
+void Channel::removeMember(int userSocket)
+{
+	std::map<int, std::string>::iterator it = _members.find(userSocket);
+	if (it == _members.end())
+		return;
+	std::string nick = it->second;
+	_members.erase(it);
+	_operators.erase(userSocket);
+}
+
 
 void	Channel::banUser(std::string &nick)
 {

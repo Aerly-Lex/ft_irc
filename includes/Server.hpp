@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:09:28 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 17:26:30 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 14:25:58 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ class Server
 		void			run();
 
 		void	acceptNewUsers(std::vector<pollfd>& fds);
+		void	removeUserFromAllChannels(int socket);
 		void	handleUserMessage(std::vector<pollfd>& fds, int i);
 		void	handleUserCommand(int clientSocket, const std::string& message);
 		void	welcomeMsg(int userSocket);

@@ -36,8 +36,9 @@ class Channel
 
 		void				banUser(std::string &nick);
 		bool				isBanned(const std::string &nick) const;
+		bool				nickExists(const std::string &nick) const;
 
-		void				addMember(int userSocket, std::string &nick);
+		void				addMember(int userSocket, const std::string &nick);
 		void				removeMember(int userSocket);
 
 		void				addOperator(int userSocket, std::string &nick);

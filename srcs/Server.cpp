@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 18:36:47 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 14:26:15 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,15 @@ void		Server::run()
 				else
 					handleUserMessage(fds, i);
 			}
+			else if (fds[i].revents & (POLLHUP | POLLERR | POLLNVAL))
+			{
+				int deadSocket = fds[i].fd;
+				std::cout << RED << "Socket " << deadSocket << " hat sich verabschiedet." << RESET << std::endl;
+
+				removeUserFromAllChannels(deadSocket);
+				close(deadSocket);
+				fds.erase(fds.begin() + i);
+			}
 		}
 	}
 }
@@ -170,49 +179,56 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 	socklen_t	userAddrLen = sizeof(userAddr);
 	int userSocket = accept(_socket, (sockaddr*)&userAddr, &userAddrLen);
 	if (userSocket == -1)
-		throw std::runtime_error("Failed to accept incoming connection");
+	throw std::runtime_error("Failed to accept incoming connection");
 
-	// create a new User object and add to map
-	User	newUser(userSocket);
-	newUser._socket = userSocket;
-	newUser._nickname = "Nick" + std::to_string(userSocket);
-	newUser._userName = "";
-	newUser._realName = "";
-	newUser._password = "";
-	newUser._hostName = inet_ntoa(userAddr.sin_addr); // saving IP-Adress as hostname
-	// newUser._hostName = "";
+// create a new User object and add to map
+User	newUser(userSocket);
+newUser._socket = userSocket;
+newUser._nickname = "Nick" + std::to_string(userSocket);
+newUser._userName = "";
+newUser._realName = "";
+newUser._password = "";
+newUser._hostName = inet_ntoa(userAddr.sin_addr); // saving IP-Adress as hostname
+// newUser._hostName = "";
 
-	// newUser._ipAddress = inet_ntoa(userAddr.sin_addr); // saving IP-Adress
-	newUser._registered = false;
-	_users[userSocket] = newUser;
+// newUser._ipAddress = inet_ntoa(userAddr.sin_addr); // saving IP-Adress
+newUser._registered = false;
+_users[userSocket] = newUser;
 
-	// adding the new user socket to poll-fd list
-	pollfd	user_fd;
-	user_fd.fd = userSocket;
-	user_fd.events = POLLIN;
-	fds.push_back(user_fd);
+// adding the new user socket to poll-fd list
+pollfd	user_fd;
+user_fd.fd = userSocket;
+user_fd.events = POLLIN;
+fds.push_back(user_fd);
 
 
-	// /////test
-	// std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickname);
-	// send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-	// // 002 - Host info
-	// std::string yourHost = ":irc.server.com 002 " + newUser._nickname + " :Your host is irc.server.com  running version 1.0" + CRLF;
+// /////test
+// std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickname);
+// send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+// // 002 - Host info
+// std::string yourHost = ":irc.server.com 002 " + newUser._nickname + " :Your host is irc.server.com  running version 1.0" + CRLF;
 
-	// // 003 - Server creation time
-	// std::string created = ":irc.server.com 003 " + newUser._nickname + " :This server was created today" + CRLF;
+// // 003 - Server creation time
+// std::string created = ":irc.server.com 003 " + newUser._nickname + " :This server was created today" + CRLF;
 
-	// // 004 - Server details
-	// std::string myInfo = ":irc.server.com 004 " + newUser._nickname + " irc.server.com 1.0 iov" + CRLF;
+// // 004 - Server details
+// std::string myInfo = ":irc.server.com 004 " + newUser._nickname + " irc.server.com 1.0 iov" + CRLF;
 
-	// // send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-	// send(userSocket, yourHost.c_str(), yourHost.size(), 0);
-	// send(userSocket, created.c_str(), created.size(), 0);
-	// send(userSocket, myInfo.c_str(), myInfo.size(), 0);
-	// /////test
+// // send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
+// send(userSocket, yourHost.c_str(), yourHost.size(), 0);
+// send(userSocket, created.c_str(), created.size(), 0);
+// send(userSocket, myInfo.c_str(), myInfo.size(), 0);
+// /////test
 
-	std::cout << "New User connected: " << userSocket << std::endl;
-	std::cout << "Total Users: " << fds.size() - 1 << std::endl;
+std::cout << "New User connected: " << userSocket << std::endl;
+std::cout << "Total Users: " << fds.size() - 1 << std::endl;
+}
+
+void Server::removeUserFromAllChannels(int socket)
+{
+	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+		it->second.removeMember(socket);
+	_users.erase(socket);
 }
 
 void	Server::handleUserMessage(std::vector<pollfd>& fds, int i)
