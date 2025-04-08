@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 18:23:03 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 15:15:33 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@
 #define RPL_NICKCHANGE(oldnickname, nickname) (std::string(":" + oldnickname + " NICK " + nickname + CRLF))
 // !!!ERR_NONICKNAMEGIVEN
 // !!!ERR_NOTREGISTERED
-// !!!ERR_NICKNAMEINUSE
+#define ERR_NICKNAMEINUSE(nickname) (std::string(":" + std::string(SRV_NAME) + " 433 " + nickname + " :Nickname is already in use" + CRLF))
 // there is a max len for nick appearantly... 9 chars - didnt test yet
 
 // cleaned comments, fixed small issue with nick message

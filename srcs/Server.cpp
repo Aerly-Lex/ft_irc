@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 14:26:15 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/08 14:34:57 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,11 +163,11 @@ void		Server::run()
 			else if (fds[i].revents & (POLLHUP | POLLERR | POLLNVAL))
 			{
 				int deadSocket = fds[i].fd;
-				std::cout << RED << "Socket " << deadSocket << " hat sich verabschiedet." << RESET << std::endl;
-
+				std::cout << RED << "Socket " << deadSocket << " said goodbye." << RESET << std::endl; // can be removed later
 				removeUserFromAllChannels(deadSocket);
 				close(deadSocket);
 				fds.erase(fds.begin() + i);
+				i--;
 			}
 		}
 	}

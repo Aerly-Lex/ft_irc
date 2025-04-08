@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 14:06:41 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/08 14:55:19 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ bool	Channel::isBanned(const std::string &nick) const // checks trough a vector 
 	return false;
 }
 
-bool Channel::nickExists(const std::string &nick) const // checks if a nick is already in the _members map
+bool Channel::memberExists(const std::string &nick) const // checks if a nick is already in the _members map
 {
 	for (std::map<int, std::string>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 		if (it->second == nick)
@@ -78,7 +78,7 @@ bool Channel::nickExists(const std::string &nick) const // checks if a nick is a
 
 void Channel::addMember(int userSocket, const std::string &nick) // adds a user to the _members map
 {
-	if (_members.count(userSocket) || nickExists(nick) || isBanned(nick))
+	if (_members.count(userSocket) || memberExists(nick) || isBanned(nick))
 		return;
 	_members[userSocket] = nick;
 	if (_members.size() == 1 && _operators.empty())
