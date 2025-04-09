@@ -20,7 +20,8 @@ CMDS		=	srcs/commands/cap.cpp \
 				srcs/commands/quit.cpp \
 				srcs/commands/join.cpp \
 				srcs/commands/topic.cpp \
-				srcs/commands/privmsg.cpp
+				srcs/commands/privmsg.cpp \
+				srcs/commands/kick.cpp
 
 ALL_SRC		= $(SRC) $(CMDS)
 

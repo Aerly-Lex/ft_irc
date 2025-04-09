@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 16:00:14 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 18:17:52 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,24 @@ bool Channel::memberExists(const std::string &nick) const // checks if a nick is
 	return false;
 }
 
+bool	Channel::isOperator(int userSocket) const
+{
+	if (_operators.find(userSocket) == _operators.end())
+		return false;
+	return true;
+}
+
+int		Channel::isMember(std::string nickName)
+{
+	auto it = _members.begin();
+	for (; it != _members.end(); it++)
+	{
+		if(it->second == nickName)
+			return (it->first);
+	}
+	return (0);
+}
+
 void Channel::addMember(int userSocket, const std::string &nick) // adds a user to the _members map
 {
 	if (_members.count(userSocket) || memberExists(nick) || isBanned(nick))
@@ -136,6 +154,7 @@ std::string Channel::getNames() const
 
 void Channel::broadcast(int userSocket, std::string Msg)
 {
+	std::cout << Msg << std::endl;
 	for (auto it = _members.begin(); it != _members.end(); it++)
 	{
 		if (userSocket != it->first)

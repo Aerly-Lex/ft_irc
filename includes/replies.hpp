@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 16:00:22 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/08 17:38:34 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,9 @@
 // 401 - NOSUCHNICK  if there is no such nickname or channel
 #define ERR_NOSUCHNICK(nickname, target) (":" + std::string(SRV_NAME) + " 401 " + nickname + target + " :No such nick/channel" + CRLF)
 
+// ERR_CHANOPRIVSNEEDED (482) - no operator priviledges for the user
+#define ERR_CHANOPRIVSNEEDED(nickname, channelname) (":" + std::string(SRV_NAME) + " 482 " + nickname + " " + channelname + " :You're not a channel operator" + CRLF)
+
+// ERR_USERNOTINCHANNEL (441)
+#define ERR_USERNOTINCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 441 " + opname + " " + nickname + " " + channelname + " :User not in the Channel" + CRLF)
 // cleaned comments, fixed small issue with nick message

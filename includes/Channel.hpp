@@ -27,7 +27,7 @@ class Channel
 		std::string			getPass() const;
 		std::string			getMode() const;
 		std::string			getNames() const;
-		
+
 		void				broadcast(int userSocket, std::string Msg);
 
 		void				setName(std::string &name);
@@ -40,9 +40,11 @@ class Channel
 		bool				memberExists(const std::string &nick) const;
 
 		void				addMember(int userSocket, const std::string &nick);
+		int					isMember(std::string nickName);
 		void				removeMember(int userSocket);
 
 		void				addOperator(int userSocket, std::string &nick);
+		bool				isOperator(int userSocket) const;
 		void				removeOperator(int userSocketk);
 		// void	removeMember(int clientSocket);
 		// void	broadcastMessage(int clientSocket, const std::string& message);
