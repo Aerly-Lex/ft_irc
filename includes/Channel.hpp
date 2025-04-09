@@ -29,6 +29,8 @@ class Channel
 		std::string			getNames() const;
 
 		void				broadcast(int userSocket, std::string Msg);
+		bool				isMember(int socket) const;
+		void				updateNickname(int socket, const std::string &newNick);
 
 		void				setName(std::string &name);
 		void				setTopic(std::string &topic);

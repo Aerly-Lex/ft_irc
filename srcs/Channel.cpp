@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 18:17:52 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/09 13:24:28 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,11 +105,7 @@ void Channel::addMember(int userSocket, const std::string &nick) // adds a user 
 
 void Channel::removeMember(int userSocket)
 {
-	std::map<int, std::string>::iterator it = _members.find(userSocket);
-	if (it == _members.end())
-		return;
-	std::string nick = it->second;
-	_members.erase(it);
+	_members.erase(userSocket);
 	_operators.erase(userSocket);
 }
 
@@ -162,7 +158,18 @@ void Channel::broadcast(int userSocket, std::string Msg)
 	}
 }
 
+bool Channel::isMember(int socket) const
+{
+	return _members.count(socket) > 0;
+}
 
+void Channel::updateNickname(int socket, const std::string& newNick)
+{
+	if (_members.count(socket))
+		_members[socket] = newNick;
+	if (_operators.count(socket))
+		_operators[socket] = newNick;
+}
 
 // void	Channel::removeMember(int clientSocket)
 // {

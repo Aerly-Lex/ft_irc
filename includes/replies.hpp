@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 17:38:34 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/09 13:24:19 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@
 // NICKnames Stuff
 // NICK <username> - change nickname
 #define RPL_NICKCHANGE(oldnickname, nickname) (std::string(":" + oldnickname + " NICK " + nickname + CRLF))
-// !!!ERR_NONICKNAMEGIVEN
-// !!!ERR_NOTREGISTERED
+#define ERR_NONICKNAMEGIVEN() (":" + std::string(SRV_NAME) + " 431 * :No nickname given" + CRLF)
+#define ERR_NOTREGISTERED() (":" + std::string(SRV_NAME) + " 451 * :You have not registered" + CRLF)
 #define ERR_NICKNAMEINUSE(nickname) (std::string(":" + std::string(SRV_NAME) + " 433 " + nickname + " :Nickname is already in use" + CRLF))
 // there is a max len for nick appearantly... 9 chars - didnt test yet
 // 401 - NOSUCHNICK  if there is no such nickname or channel
