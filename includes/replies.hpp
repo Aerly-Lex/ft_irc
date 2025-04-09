@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/09 13:24:19 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/09 16:16:39 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,8 @@
 
 // ERR_USERNOTINCHANNEL (441)
 #define ERR_USERNOTINCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 441 " + opname + " " + nickname + " " + channelname + " :User not in the Channel" + CRLF)
+// ERR_USERONCHANNEL (443)
+#define ERR_USERONCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 442 " + opname + " " + nickname + " " + channelname + " :User is already on channel" + CRLF)
+// ERR_INVITEONLYCHAN (473)
+# define ERR_INVITEONLYCHAN(nickname, channelname) (":" + std::string(SRV_NAME) + " 473 " + nickname + " " + channelname + " :Cannot join channel" + CRLF)
 // cleaned comments, fixed small issue with nick message

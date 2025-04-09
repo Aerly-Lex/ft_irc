@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/09 13:24:28 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/09 16:01:40 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,48 +18,47 @@ Channel::Channel(const std::string& name) : _name(name)
 {
 	_topic = "";
 	_password = "";
-	_mode = "";
-	inviteOnly = false;
-
+	_userLimit = 0;
+	_inviteOnly = false;
+	_topic_rigths = false;
 }
 
 Channel::~Channel()
 {
 }
 
-std::string	Channel::getName() const
+std::string	Channel::getName() const { return _name; }
+std::string	Channel::getTopic() const { return _topic; }
+std::string	Channel::getPass() const{ return _password; }
+int			Channel::getUserLimit() const { return _userLimit; }
+bool	Channel::isInviteOnly() const{ return _inviteOnly; }
+bool	Channel::isTopicRights() const { return _topic_rigths; }
+
+std::string Channel::getNames() const
 {
-	return _name;
-}
-std::string	Channel::getTopic() const
-{
-	return _topic;
-}
-std::string	Channel::getPass() const
-{
-	return _password;
-}
-std::string	Channel::getMode() const
-{
-	return _mode;
+	std::string namelist;
+	for(auto it = _members.begin(); it != _members.end(); it++)
+	{
+		if (_operators.find(it->first) != _operators.end())
+			namelist += "@";
+		namelist += it->second + " ";
+	}
+	return namelist;
 }
 
-void	Channel::setName(std::string &name)
+bool	Channel::isInvited(std::string &user) const
 {
-	_name = name;
+	if (_invited.count(user) > 0)
+		return true;
+	return false;
 }
-void	Channel::setMode(std::string &mode)
-{
-	_mode = mode;
-}
-void	Channel::setPass(std::string &password)
-{
-	_password = password;
-}
-void	Channel::setTopic(std::string &topic)
-{
-	_topic = topic;
-}
+
+void	Channel::setName(std::string &name) { _name = name; }
+void	Channel::setTopic(std::string &topic) { _topic = topic; }
+void	Channel::setPass(std::string &password) { _password = password; }
+void	Channel::setUserLimits(int &userLimit) { _userLimit = userLimit; }
+void	Channel::setInviteOnly(bool mode) { _inviteOnly = mode; }
+void	Channel::setTopicRights(bool rights) { _topic_rigths = rights; }
 
 bool	Channel::isBanned(const std::string &nick) const // checks trough a vector if a "nick" is banned or not
 {
@@ -136,17 +135,6 @@ void	Channel::addOperator(int userSocket, std::string &nick)
 		_operators[userSocket] = nick;
 }
 
-std::string Channel::getNames() const
-{
-	std::string namelist;
-	for(auto it = _members.begin(); it != _members.end(); it++)
-	{
-		if (_operators.find(it->first) != _operators.end())
-			namelist += "@";
-		namelist += it->second + " ";
-	}
-	return namelist;
-}
 
 void Channel::broadcast(int userSocket, std::string Msg)
 {

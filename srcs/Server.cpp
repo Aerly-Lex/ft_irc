@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 16:44:43 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/09 14:25:24 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,7 +306,10 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		_commands.kick(userSocket, chnlName, nickName, reason);
 	}
 	else if (command == "INVITE")
+	{
+
 		std::cout << "INVITE" << std::endl;
+	}
 	else if (command == "TOPIC")
 		std::cout << "TOPIC" << std::endl;
 	else if (command == "MODE")
