@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 16:09:23 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/09 13:21:11 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,18 @@ void Channel::broadcast(int userSocket, std::string Msg)
 	}
 }
 
+bool Channel::isMember(int socket) const
+{
+	return _members.count(socket) > 0;
+}
 
+void Channel::updateNickname(int socket, const std::string& newNick)
+{
+	if (_members.count(socket))
+		_members[socket] = newNick;
+	if (_operators.count(socket))
+		_operators[socket] = newNick;
+}
 
 // void	Channel::removeMember(int clientSocket)
 // {
