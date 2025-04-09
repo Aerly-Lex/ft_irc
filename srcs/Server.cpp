@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/09 14:25:24 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/09 16:41:42 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,7 +307,9 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	}
 	else if (command == "INVITE")
 	{
-
+		std::string target, channel;
+		iss >> target >> channel;
+		_commands.invite(userSocket, target, channel);
 		std::cout << "INVITE" << std::endl;
 	}
 	else if (command == "TOPIC")

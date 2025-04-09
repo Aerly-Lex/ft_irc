@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 14:22:16 by chorst            #+#    #+#             */
-/*   Updated: 2025/04/09 16:12:05 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/09 16:46:23 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void Commands::invite(int inviterSocket, const std::string &targetNick, const std::string &channelName)
 {
-	if(!_users.count(inviterSocket)) // Is inviterUser existend?
-		return sendTo(inviterSocket, ERR_NOTREGISTERED());
+	if (_channels[channelName].isOperator(inviterSocket) == false)
+		return sendTo(inviterSocket, ERR_CHANOPRIVSNEEDED(_users[inviterSocket]._nickname, targetNick));
 
 	int targetSocket = -1;
 	for (auto it = _users.begin(); it != _users.end(); it++)
@@ -26,11 +26,11 @@ void Commands::invite(int inviterSocket, const std::string &targetNick, const st
 			break ;
 		}
 	}
-
 	if (targetSocket == -1)
 		return sendTo(inviterSocket, ERR_NOSUCHNICK(_users[inviterSocket]._nickname, targetNick));
 
 	if (_channels[channelName].isMember(targetSocket))
 		return sendTo(inviterSocket, ERR_USERONCHANNEL(_users[inviterSocket]._nickname ,targetNick, channelName));
-
+	sendTo(inviterSocket, RPL_INVITING(_users[inviterSocket]._nickname, targetNick, channelName));
+	sendTo(targetSocket, (":" + _users[inviterSocket]._mask + " INVITE " + targetNick + " " + channelName + "\r\n"));
 }
