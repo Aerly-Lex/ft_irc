@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/09 13:24:19 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/09 16:30:21 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@
 #define RPL_JOINMSG(nickname, username, hostname, channel) (":" + nickname + "!" + username + "@" + hostname + " JOIN " + channel + CRLF)
 // RPL_TOPIC (332) responds with the topic of the channel when there is one
 #define RPL_TOPIC(nickname, channelname, topic) (":" + std::string(SRV_NAME) + " 332 " + nickname + " " + channelname + " :" + topic + CRLF)
+// RPL_INVITING (341)
+#define RPL_INVITING(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 341 " + opname + " " + nickname + " " + channelname + CRLF)
 // RPL_NAMREPLY (353) sends a list of all members of the channel
 #define RPL_NAMREPLY(nickname, channelname, names) (":" + std::string(SRV_NAME) + " 353 " + nickname + " = " + channelname + " :" + names + CRLF)
 // RPL_ENDOFNAMES (366) Ends member list
@@ -61,4 +63,8 @@
 
 // ERR_USERNOTINCHANNEL (441)
 #define ERR_USERNOTINCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 441 " + opname + " " + nickname + " " + channelname + " :User not in the Channel" + CRLF)
+// ERR_USERONCHANNEL (443)
+#define ERR_USERONCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 442 " + opname + " " + nickname + " " + channelname + " :User is already on channel" + CRLF)
+// ERR_INVITEONLYCHAN (473)
+# define ERR_INVITEONLYCHAN(nickname, channelname) (":" + std::string(SRV_NAME) + " 473 " + nickname + " " + channelname + " :Cannot join channel" + CRLF)
 // cleaned comments, fixed small issue with nick message

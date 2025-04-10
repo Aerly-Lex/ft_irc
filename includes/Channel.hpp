@@ -11,14 +11,17 @@ class Channel
 		std::string					_topic;
 		std::string					_topicData;
 		std::string					_password;
-		std::string					_mode;
+		int							_userLimit;
+
+		bool						_inviteOnly;
+		bool						_topic_rigths;
+
 		std::vector<std::string>	_banned;
+		std::set<std::string>		_invited;
 		std::map<int, std::string>	_members;
 		std::map<int, std::string>	_operators;
 
 	public:
-		bool				inviteOnly;
-		// int					userLimit;
 		Channel();
 		Channel(const std::string& name);
 		~Channel();
@@ -27,18 +30,25 @@ class Channel
 		std::string			getTopic() const;
 		std::string			getTopicData() const;
 		std::string			getPass() const;
-		std::string			getMode() const;
+		int					getUserLimit() const;
+		bool				isInviteOnly() const;
+		bool				isTopicRights() const;
+
 		std::string			getNames() const;
 
-		void				broadcast(int userSocket, std::string Msg);
-		void				updateNickname(int socket, const std::string &newNick);
+		bool				isInvited(std::string &user) const;
+
 
 		void				setName(std::string &name);
 		void				setTopic(std::string &topic);
-		void				setTopicData(std::string &userMask);
-
 		void				setPass(std::string &password);
-		void				setMode(std::string &mode);
+		void				setUserLimits(int &userLimit);
+		void				setInviteOnly(bool mode);
+		void				setTopicRights(bool rights);
+
+		void				broadcast(int userSocket, std::string Msg);
+		bool				isMember(int socket) const;
+		void				updateNickname(int socket, const std::string &newNick);
 
 		void				banUser(std::string &nick);
 		bool				isBanned(const std::string &nick) const;

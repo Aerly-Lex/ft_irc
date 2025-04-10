@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:31:17 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/09 14:49:49 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/10 13:41:30 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class Commands
 		void	quit(int userSocket);
 		void	topic(int userSocket, std::string channel, std::string topic);
 		void	kick(int userSocket, std::string channelName, std::string nickName, std::string reason);
+		void	invite(int inviterSocket, const std::string &targetNick, const std::string &channelName);
 		void	privmsg(int userSocket, std::string userMask, std::string target, std::string message);
 		//topic
 };

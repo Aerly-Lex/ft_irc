@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:02:20 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/07 17:31:21 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/09 16:17:06 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	Commands::join(int userSocket, const std::string& channelName)
 		Channel	newChannel(channelName);
 		_channels[channelName] = newChannel;
 	}
+	if (_channels[channelName].isInviteOnly() && !_channels[channelName].isInvited(_users[userSocket]._nickname))
+		return sendTo(userSocket, ERR_INVITEONLYCHAN(_users[userSocket]._nickname, channelName));
 	// Add client to channel
 	_channels[channelName].addMember(userSocket, _users[userSocket]._nickname);
 

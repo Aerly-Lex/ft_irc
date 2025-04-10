@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/09 14:50:54 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/10 13:43:09 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,7 +306,12 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		_commands.kick(userSocket, chnlName, nickName, reason);
 	}
 	else if (command == "INVITE")
+	{
+		std::string target, channel;
+		iss >> target >> channel;
+		_commands.invite(userSocket, target, channel);
 		std::cout << "INVITE" << std::endl;
+	}
 	else if (command == "TOPIC")
 	{
 		std::cout << "TOPIC" << std::endl;
