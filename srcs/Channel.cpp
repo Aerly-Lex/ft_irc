@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/09 13:24:28 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/09 14:44:22 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,11 @@ std::string	Channel::getMode() const
 	return _mode;
 }
 
+std::string Channel::getTopicData() const
+{
+	return _topicData;
+}
+
 void	Channel::setName(std::string &name)
 {
 	_name = name;
@@ -59,6 +64,11 @@ void	Channel::setPass(std::string &password)
 void	Channel::setTopic(std::string &topic)
 {
 	_topic = topic;
+}
+
+void	Channel::setTopicData(std::string &userMask)
+{
+	_topicData = (userMask + " " + std::to_string(std::time(nullptr)));
 }
 
 bool	Channel::isBanned(const std::string &nick) const // checks trough a vector if a "nick" is banned or not
@@ -81,6 +91,11 @@ bool	Channel::isOperator(int userSocket) const
 	if (_operators.find(userSocket) == _operators.end())
 		return false;
 	return true;
+}
+
+bool Channel::isMember(int socket) const
+{
+	return _members.count(socket) > 0;
 }
 
 int		Channel::isMember(std::string nickName)
@@ -158,10 +173,6 @@ void Channel::broadcast(int userSocket, std::string Msg)
 	}
 }
 
-bool Channel::isMember(int socket) const
-{
-	return _members.count(socket) > 0;
-}
 
 void Channel::updateNickname(int socket, const std::string& newNick)
 {

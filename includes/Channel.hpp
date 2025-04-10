@@ -9,6 +9,7 @@ class Channel
 	private:
 		std::string					_name;
 		std::string					_topic;
+		std::string					_topicData;
 		std::string					_password;
 		std::string					_mode;
 		std::vector<std::string>	_banned;
@@ -24,16 +25,18 @@ class Channel
 
 		std::string			getName() const;
 		std::string			getTopic() const;
+		std::string			getTopicData() const;
 		std::string			getPass() const;
 		std::string			getMode() const;
 		std::string			getNames() const;
 
 		void				broadcast(int userSocket, std::string Msg);
-		bool				isMember(int socket) const;
 		void				updateNickname(int socket, const std::string &newNick);
 
 		void				setName(std::string &name);
 		void				setTopic(std::string &topic);
+		void				setTopicData(std::string &userMask);
+
 		void				setPass(std::string &password);
 		void				setMode(std::string &mode);
 
@@ -42,6 +45,7 @@ class Channel
 		bool				memberExists(const std::string &nick) const;
 
 		void				addMember(int userSocket, const std::string &nick);
+		bool				isMember(int socket) const;
 		int					isMember(std::string nickName);
 		void				removeMember(int userSocket);
 
