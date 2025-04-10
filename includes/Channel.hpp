@@ -45,9 +45,9 @@ class Channel
 		void				setUserLimits(int &userLimit);
 		void				setInviteOnly(bool mode);
 		void				setTopicRights(bool rights);
+		void				setTopicData(std::string &userMask);
 
 		void				broadcast(int userSocket, std::string Msg);
-		bool				isMember(int socket) const;
 		void				updateNickname(int socket, const std::string &newNick);
 
 		void				banUser(std::string &nick);

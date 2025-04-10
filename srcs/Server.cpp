@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/10 13:43:09 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/10 14:41:37 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,7 +316,10 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	{
 		std::cout << "TOPIC" << std::endl;
 		std::string channel, topic;
-		iss >> channel >> topic;
+		iss >> channel;
+		std::getline(iss, topic);
+		if (!topic.empty())
+			topic.erase(0, 2);
 		_commands.topic(userSocket, channel, topic);
 	}
 	else if (command == "MODE")

@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/03 14:34:34 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/10 14:52:02 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,8 @@ int	main(int argc, char **argv)
 	return 0;
 }
 /*
-Daniel ToDo:
-Chillen.
-
-Sören/Chris ToDo:
-implement CAP
-slim handleUserMessage function! too many repetitives...
-implement the replies (commented in includes/replies.hpp) (NICK, JOIN, PING, etc.)), everthing with 3x!!!
-
+General ToDo:
+commands: ban, part, quit, modes!
 
 ALLOWED FUNCTIONS, among others:
 setsockopt, getsockname,

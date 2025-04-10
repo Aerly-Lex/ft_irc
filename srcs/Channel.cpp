@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/10 13:42:37 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/10 14:01:08 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ std::string	Channel::getName() const { return _name; }
 std::string	Channel::getTopic() const { return _topic; }
 std::string	Channel::getPass() const{ return _password; }
 int			Channel::getUserLimit() const { return _userLimit; }
+std::string	Channel::getTopicData() const { return _topicData; }
 bool	Channel::isInviteOnly() const{ return _inviteOnly; }
 bool	Channel::isTopicRights() const { return _topic_rigths; }
 
@@ -59,6 +60,11 @@ void	Channel::setPass(std::string &password) { _password = password; }
 void	Channel::setUserLimits(int &userLimit) { _userLimit = userLimit; }
 void	Channel::setInviteOnly(bool mode) { _inviteOnly = mode; }
 void	Channel::setTopicRights(bool rights) { _topic_rigths = rights; }
+
+void	Channel::setTopicData(std::string &userMask)
+{
+	_topicData = std::string(userMask + " " + std::to_string(std::time(nullptr)));
+}
 
 bool	Channel::isBanned(const std::string &nick) const // checks trough a vector if a "nick" is banned or not
 {

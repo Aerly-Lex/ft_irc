@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/09 16:30:21 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/10 14:12:42 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,12 @@
 
 // RPL_JOINMSG replies the Joinmessage of the client as confirmation
 #define RPL_JOINMSG(nickname, username, hostname, channel) (":" + nickname + "!" + username + "@" + hostname + " JOIN " + channel + CRLF)
+// RPL_NOTOPIC (331) return message if no topic is set
+#define RPL_NOTOPIC(nickname, channelname) (":" + std::string(SRV_NAME) + " 331 " + nickname + " " + channelname + " :No topic set!" + CRLF)
+// RPL_TOPIC (332) replies with the Topic of the Channel
+#define RPL_TOPIC(nickname, channelname, topic) (":" + std::string(SRV_NAME) + " 332 " + nickname + " " + channelname + " :" + topic + CRLF)
+// RPL_TOPICWHOTIME (333) replies with metadata of topic
+#define RPL_TOPICWHOTIME(nickname, channelname, topicData) (":" + std::string(SRV_NAME) + " 333 " + nickname + " " + channelname + " " + topicData + CRLF)
 // RPL_TOPIC (332) responds with the topic of the channel when there is one
 #define RPL_TOPIC(nickname, channelname, topic) (":" + std::string(SRV_NAME) + " 332 " + nickname + " " + channelname + " :" + topic + CRLF)
 // RPL_INVITING (341)
