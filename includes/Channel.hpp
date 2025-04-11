@@ -33,6 +33,8 @@ class Channel
 		int					getUserLimit() const;
 		bool				isInviteOnly() const;
 		bool				isTopicRights() const;
+		int					getSocket(std::string nickname);
+		std::string			getChannelModes() const;
 
 		std::string			getNames() const;
 
@@ -41,11 +43,14 @@ class Channel
 
 		void				setName(std::string &name);
 		void				setTopic(std::string &topic);
-		void				setPass(std::string &password);
-		void				setUserLimits(int &userLimit);
+		void				setPass(std::string password);
+		void				setUserLimits(int userLimit);
 		void				setInviteOnly(bool mode);
 		void				setTopicRights(bool rights);
 		void				setTopicData(std::string &userMask);
+
+		void				addInvited(std::string &nickname);
+		void				removeInvited(std::string nickname);
 
 		void				broadcast(int userSocket, std::string Msg);
 		void				updateNickname(int socket, const std::string &newNick);

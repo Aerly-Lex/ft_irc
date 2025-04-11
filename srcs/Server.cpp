@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/10 14:41:37 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/11 17:56:20 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,10 +280,9 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	else if (command == "JOIN")
 	{
 		std::cout << MAGENTA << "JOIN" << std::endl << RESET;
-		std::string	channelName;
-		iss >> channelName;
-		std::cout << channelName << std::endl;
-		_commands.join(userSocket, channelName);
+		std::string	channelName, password;
+		iss >> channelName >> password;
+		_commands.join(userSocket, channelName, password);
 	}
 	else if (command == "NICK")
 	{
@@ -323,7 +322,15 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		_commands.topic(userSocket, channel, topic);
 	}
 	else if (command == "MODE")
-		(void)command;
+	{
+		// channel, flag, and the param == username if needed
+		std::string channel, flag, param;
+		std::vector<std::string> params;
+		iss >> channel >> flag;
+		while (iss >> param)
+			params.push_back(param);
+		_commands.mode(userSocket, channel, flag, params);
+	}
 	else if (command == "QUIT")
 		_commands.quit(userSocket);
 	else if (command == "PART") // part == leave channel

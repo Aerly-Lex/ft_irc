@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/10 14:01:08 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/11 16:34:52 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,33 @@ std::string	Channel::getTopicData() const { return _topicData; }
 bool	Channel::isInviteOnly() const{ return _inviteOnly; }
 bool	Channel::isTopicRights() const { return _topic_rigths; }
 
+int	Channel::getSocket(std::string nickname)
+{
+	for (auto it = _members.begin(); it != _members.end(); it++)
+	{
+		if (it->second == nickname)
+			return (it->first);
+	}
+	return (0);
+}
+
+std::string		Channel::getChannelModes() const
+{
+	std::string modes = "+";
+	if (!_password.empty())
+		modes += "k";
+	if (_inviteOnly == true)
+		modes += "i";
+	if (_topic_rigths == true)
+		modes += "t";
+	if (_userLimit > 0)
+	{
+		modes += "l";
+		modes += " " + std::to_string(_userLimit);
+	}
+	return modes;
+}
+
 std::string Channel::getNames() const
 {
 	std::string namelist;
@@ -56,14 +83,24 @@ bool	Channel::isInvited(std::string &user) const
 
 void	Channel::setName(std::string &name) { _name = name; }
 void	Channel::setTopic(std::string &topic) { _topic = topic; }
-void	Channel::setPass(std::string &password) { _password = password; }
-void	Channel::setUserLimits(int &userLimit) { _userLimit = userLimit; }
+void	Channel::setPass(std::string password) { _password = password; }
+void	Channel::setUserLimits(int userLimit) { _userLimit = userLimit; }
 void	Channel::setInviteOnly(bool mode) { _inviteOnly = mode; }
 void	Channel::setTopicRights(bool rights) { _topic_rigths = rights; }
 
 void	Channel::setTopicData(std::string &userMask)
 {
 	_topicData = std::string(userMask + " " + std::to_string(std::time(nullptr)));
+}
+
+void	Channel::addInvited(std::string &nickname)
+{
+	_invited.insert(nickname);
+}
+
+void	Channel::removeInvited(std::string nickname)
+{
+	_invited.erase(nickname);
 }
 
 bool	Channel::isBanned(const std::string &nick) const // checks trough a vector if a "nick" is banned or not

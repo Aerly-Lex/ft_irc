@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/10 14:12:42 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/11 17:54:37 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@
 
 // // send PONG on incoming PING
 #define RPL_PONG(nickname, hostname) ("PONG" + nickname + " " + hostname + CRLF)
-
+// RPL_CHANNELMODEIS (324) sending the modes of the Channel
+#define RPL_CHANNELNAMEIS(nickname, channelname, modes) (":" + std::string(SRV_NAME) + " 324 " + nickname + " " + channelname + " " + modes + CRLF)
 // RPL_JOINMSG replies the Joinmessage of the client as confirmation
 #define RPL_JOINMSG(nickname, username, hostname, channel) (":" + nickname + "!" + username + "@" + hostname + " JOIN " + channel + CRLF)
 // RPL_NOTOPIC (331) return message if no topic is set
@@ -72,5 +73,9 @@
 // ERR_USERONCHANNEL (443)
 #define ERR_USERONCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 442 " + opname + " " + nickname + " " + channelname + " :User is already on channel" + CRLF)
 // ERR_INVITEONLYCHAN (473)
-# define ERR_INVITEONLYCHAN(nickname, channelname) (":" + std::string(SRV_NAME) + " 473 " + nickname + " " + channelname + " :Cannot join channel" + CRLF)
+#define ERR_INVITEONLYCHAN(nickname, channelname) (":" + std::string(SRV_NAME) + " 473 " + nickname + " " + channelname + " :Cannot join channel" + CRLF)
+// ERR_BADCHANNELKEY (475) if given wrong or no password for protected channel
+#define ERR_BADCHANNELKEY(nickname, channelname) (":" + std::string(SRV_NAME) + " 475 " + nickname + " " + channelname + " :Cannot join Channel (+k)" + CRLF)
+// ERR_INVALIDPARAM (696)
+#define ERR_INVALIDPARAM(nickname, channelname, modechar, reason) (":" + std::string(SRV_NAME) + " 696 " + nickname + " " + channelname + " " + modechar + " :" + reason + CRLF)
 // cleaned comments, fixed small issue with nick message
