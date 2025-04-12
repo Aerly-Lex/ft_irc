@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/11 17:56:20 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/12 16:14:15 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ bool	Server::Signal = false;
 //				Constructor				//
 //////////////////////////////////////////
 
-Server::Server(int port, std::string password) : _port(port), _password(password), _commands(*this), _creationTime(std::chrono::system_clock::now())
+Server::Server(int port, std::string password)
+: _port(port), _password(password), _commands(*this), _creationTime(std::chrono::system_clock::now())
 {
 
 }
@@ -201,25 +202,6 @@ user_fd.fd = userSocket;
 user_fd.events = POLLIN;
 fds.push_back(user_fd);
 
-
-// /////test
-// std::string	welcomeMessage = RPL_WELCOME(_users[userSocket]._nickname);
-// send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-// // 002 - Host info
-// std::string yourHost = ":irc.server.com 002 " + newUser._nickname + " :Your host is irc.server.com  running version 1.0" + CRLF;
-
-// // 003 - Server creation time
-// std::string created = ":irc.server.com 003 " + newUser._nickname + " :This server was created today" + CRLF;
-
-// // 004 - Server details
-// std::string myInfo = ":irc.server.com 004 " + newUser._nickname + " irc.server.com 1.0 iov" + CRLF;
-
-// // send(userSocket, welcomeMessage.c_str(), welcomeMessage.size(), 0);
-// send(userSocket, yourHost.c_str(), yourHost.size(), 0);
-// send(userSocket, created.c_str(), created.size(), 0);
-// send(userSocket, myInfo.c_str(), myInfo.size(), 0);
-// /////test
-
 std::cout << "New User connected: " << userSocket << std::endl;
 std::cout << "Total Users: " << fds.size() - 1 << std::endl;
 }
@@ -274,8 +256,8 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 
 	std::cout << MAGENTA <<  "\t#Test#Message: " << message << std::endl;
 	std::cout << "\t#Test#Command: " << command << std::endl << RESET;
-
-	if (command == "CAP" || _users[userSocket]._loginProcess == "END")
+	// USER Alfred 0 127.0.0.1 :1,8Alfred
+	if (_users[userSocket]._loginProcess == "END" || _users[userSocket]._loginProcess == "" )
 		_commands.cap(userSocket, message);
 	else if (command == "JOIN")
 	{

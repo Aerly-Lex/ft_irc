@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cap.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 16:22:52 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/12 16:35:35 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,17 @@ void	Commands::cap(int userSocket, const std::string& message)
 		std::cout << "Username: " << _users[userSocket]._userName << std::endl;
 		std::cout << "Realname: " << _users[userSocket]._realName << std::endl;
 		_users[userSocket]._loginProcess = "END";
-		_server.welcomeMsg(userSocket);
 		return;
 	}
 
 	if (_users[userSocket]._loginProcess == "END")
 	{
-		std::cout << "Hello World" << std::endl;
+		// if (_users[userSocket]._password == ) // NC fixen!
+		// {
+		// 	sendTo(userSocket, ERR_NONICKNAMEGIVEN());
+		// 	return ;
+		// }
+		_server.welcomeMsg(userSocket);
 		_users[userSocket]._loginProcess = "DONE";
 	}
 
