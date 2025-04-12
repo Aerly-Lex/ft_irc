@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/11 17:56:20 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/12 15:10:21 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -339,7 +339,8 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	{
 		std::string target, message;
 		iss >> target;
-		message = iss.rdbuf()->str();
+		std::getline(iss, message);
+		std::cout << RED << message << std::endl;
 		_commands.privmsg(userSocket, _users[userSocket]._mask, target, message);
 	}
 	else

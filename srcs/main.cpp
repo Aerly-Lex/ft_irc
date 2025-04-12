@@ -6,7 +6,7 @@
 /*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/10 14:52:02 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/11 18:00:26 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	main(int argc, char **argv)
 }
 /*
 General ToDo:
-commands: ban, part, quit, modes!
+commands: part, quit!
 
 ALLOWED FUNCTIONS, among others:
 setsockopt, getsockname,
