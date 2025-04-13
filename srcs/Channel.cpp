@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/11 16:34:52 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/13 17:41:24 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ Channel::~Channel()
 std::string	Channel::getName() const { return _name; }
 std::string	Channel::getTopic() const { return _topic; }
 std::string	Channel::getPass() const{ return _password; }
+std::map<int, std::string>& Channel::getMembers() { return _members; }
 int			Channel::getUserLimit() const { return _userLimit; }
 std::string	Channel::getTopicData() const { return _topicData; }
 bool	Channel::isInviteOnly() const{ return _inviteOnly; }
@@ -150,13 +151,6 @@ void Channel::addMember(int userSocket, const std::string &nick) // adds a user 
 		_operators[userSocket] = nick;
 }
 
-void Channel::removeMember(int userSocket)
-{
-	_members.erase(userSocket);
-	_operators.erase(userSocket);
-}
-
-
 void	Channel::banUser(std::string &nick)
 {
 	_banned.push_back(nick);
@@ -169,12 +163,6 @@ void	Channel::banUser(std::string &nick)
 			it = _members.begin();
 		}
 	}
-}
-
-void	Channel::removeOperator(int userSocket)
-{
-	if (_operators.find(userSocket) == _operators.end())
-		_operators[userSocket].erase();
 }
 
 void	Channel::addOperator(int userSocket, std::string &nick)
@@ -203,10 +191,17 @@ void Channel::updateNickname(int socket, const std::string& newNick)
 		_operators[socket] = newNick;
 }
 
-// void	Channel::removeMember(int clientSocket)
-// {
-// 	_members.erase(std::remove(_members.begin(), _members.end(), clientSocket), _members.end());
-// }
+void Channel::removeOperator(int userSocket)
+{
+	_operators.erase(userSocket);
+}
+
+void Channel::removeMember(int userSocket)
+{
+	_members.erase(userSocket);
+	_operators.erase(userSocket);
+}
+
 
 // void	Channel::broadcastMessage(int clientSocket, const std::string& message)
 // {

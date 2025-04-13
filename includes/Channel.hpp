@@ -30,6 +30,7 @@ class Channel
 		std::string			getTopic() const;
 		std::string			getTopicData() const;
 		std::string			getPass() const;
+		std::map<int, std::string>& getMembers();
 		int					getUserLimit() const;
 		bool				isInviteOnly() const;
 		bool				isTopicRights() const;
@@ -62,11 +63,11 @@ class Channel
 		void				addMember(int userSocket, const std::string &nick);
 		bool				isMember(int socket) const;
 		int					isMember(std::string nickName);
-		void				removeMember(int userSocket);
 
 		void				addOperator(int userSocket, std::string &nick);
 		bool				isOperator(int userSocket) const;
 		void				removeOperator(int userSocketk);
+		void				removeMember(int userSocket);
 		// void	removeMember(int clientSocket);
 		// void	broadcastMessage(int clientSocket, const std::string& message);
 };

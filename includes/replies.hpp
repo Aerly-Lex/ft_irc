@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/11 17:54:37 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/13 18:50:20 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,9 @@
 #define RPL_ENDOFNAMES(nickname, channelname) (":" + std::string(SRV_NAME) + " 366 " + nickname + " " + channelname + " :END of /NAMES list" + CRLF)
 // handles the message coming from a user
 #define RPL_PRIVMSG(userMask, channel, message) (":" + userMask + " PRIVMSG " + channel + " " + message + CRLF)
+// handles the message of a leaving user from a channel
+#define RPL_USERLEAVE(nickname, channelname) (":" + nickname + "!user@localhost PART " + channelname + " :" + nickname + " has left the channel" + CRLF)
+
 
 // NICKnames Stuff
 // NICK <username> - change nickname
@@ -64,18 +67,24 @@
 // there is a max len for nick appearantly... 9 chars - didnt test yet
 // 401 - NOSUCHNICK  if there is no such nickname or channel
 #define ERR_NOSUCHNICK(nickname, target) (":" + std::string(SRV_NAME) + " 401 " + nickname + target + " :No such nick/channel" + CRLF)
+// ERR_NOSUCHCHANNEL (403)
+#define ERR_NOSUCHCHANNEL(nick, channel) (":" + std::string(SRV_NAME) + " 403 " + nick + " " + channel + " :No such channel" + CRLF)
 
-// ERR_CHANOPRIVSNEEDED (482) - no operator priviledges for the user
-#define ERR_CHANOPRIVSNEEDED(nickname, channelname) (":" + std::string(SRV_NAME) + " 482 " + nickname + " " + channelname + " :You're not a channel operator" + CRLF)
 
 // ERR_USERNOTINCHANNEL (441)
 #define ERR_USERNOTINCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 441 " + opname + " " + nickname + " " + channelname + " :User not in the Channel" + CRLF)
+// ERR_NOTONCHANNEL (442)
+#define ERR_NOTONCHANNEL(nick, channel) (":" + std::string(SRV_NAME) + " 442 " + nick + " " + channel + " :You're not on that channel" + CRLF)
 // ERR_USERONCHANNEL (443)
 #define ERR_USERONCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 442 " + opname + " " + nickname + " " + channelname + " :User is already on channel" + CRLF)
+// ERR_NEEDMOREPARAMS (461)
+#define ERR_NEEDMOREPARAMS(nickname, command) (":" + std::string(SRV_NAME) + " 461 " + nickname + " " + command + " :Not enough parameters" + CRLF)
 // ERR_INVITEONLYCHAN (473)
 #define ERR_INVITEONLYCHAN(nickname, channelname) (":" + std::string(SRV_NAME) + " 473 " + nickname + " " + channelname + " :Cannot join channel" + CRLF)
 // ERR_BADCHANNELKEY (475) if given wrong or no password for protected channel
 #define ERR_BADCHANNELKEY(nickname, channelname) (":" + std::string(SRV_NAME) + " 475 " + nickname + " " + channelname + " :Cannot join Channel (+k)" + CRLF)
+// ERR_CHANOPRIVSNEEDED (482) - no operator priviledges for the user
+#define ERR_CHANOPRIVSNEEDED(nickname, channelname) (":" + std::string(SRV_NAME) + " 482 " + nickname + " " + channelname + " :You're not a channel operator" + CRLF)
 // ERR_INVALIDPARAM (696)
 #define ERR_INVALIDPARAM(nickname, channelname, modechar, reason) (":" + std::string(SRV_NAME) + " 696 " + nickname + " " + channelname + " " + modechar + " :" + reason + CRLF)
 // cleaned comments, fixed small issue with nick message

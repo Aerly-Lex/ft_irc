@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/12 17:51:58 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/13 19:01:36 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,7 +316,11 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	else if (command == "QUIT")
 		_commands.quit(userSocket);
 	else if (command == "PART") // part == leave channel
-		_commands.part(userSocket, message);
+	{
+		std::string chan;
+		iss >> chan;
+		_commands.part(userSocket, chan);
+	}
 	else if (command == "PRIVMSG")
 	{
 		std::string target, message;
