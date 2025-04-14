@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/14 14:15:47 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/14 15:20:15 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,9 @@ void	Server::welcomeMsg(int userSocket)
 
 void	Server::signalHandler(int signum)
 {
-	// (void)signum; // Supress unused variable warning from www
-	Server::Signal	= true; // Set the signal flag to true
-	std::cout << RED << "Interrupt signal (" << signum << ") received. Exiting..." << RESET << std::endl;
+	const char *msg = "\nInterrupt signal received. Exiting...\n";
+	write(STDOUT_FILENO, msg, strlen(msg)); // because std::cout is buffered and would not flush
+	Server::Signal = true;
 }
 
 // use AF_INET in your struct sockaddr_in and PF_INET in your call to socket()
@@ -130,7 +130,11 @@ void		Server::run()
 		// poll() blocks till a event occurs
 		int ret = poll(fds.data(), fds.size(), -1);
 		if (ret == -1)
+		{
+			if (errno == EINTR) // Signal interrups poll
+				continue;		// Keep going until the signal is handled
 			throw std::runtime_error("Poll failed");
+		}
 
 		for (size_t i = 0; i < fds.size(); i++)
 		{
@@ -152,6 +156,9 @@ void		Server::run()
 			}
 		}
 	}
+	for (size_t i = 0; i < fds.size(); ++i)
+		close(fds[i].fd);
+	std::cout << GREEN << "Server shut down cleanly." << RESET << std::endl;
 }
 
 void	Server::acceptNewUsers(std::vector<pollfd>& fds)
@@ -291,6 +298,13 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		if (!topic.empty())
 			topic.erase(0, 2);
 		_commands.topic(userSocket, channel, topic);
+	}
+	else if (command == "USER")
+	{
+		std::string userName, tmp, realName;
+		iss >> _users[userSocket]._nickname >> tmp >> tmp >> _users[userSocket]._realName >> realName ;
+		_users[userSocket]._realName.erase(0, 6);
+		_users[userSocket]._realName += " " + realName;
 	}
 	else if (command == "MODE")
 	{
