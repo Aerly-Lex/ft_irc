@@ -12,8 +12,8 @@ class User
 		std::string		_password;
 		std::string		_hostName;
 		std::string		_ipAddress;
-		std::string		_recvMesg;
 		std::string		_mask;
+		std::string		_buffer;
 
 		bool			_registered;
 		std::string		_loginProcess;

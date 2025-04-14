@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/14 13:58:29 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/14 14:15:27 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@ void	Commands::cap(int userSocket, const std::string& message)
 		return;
 	}
 
+
+	if (_users[userSocket]._password != _server.getPassword())
+	{
+		//kick user
+	}
 	if (_users[userSocket]._loginProcess == "END")
 	{
 		// if (_users[userSocket]._password == ) // NC fixen!
@@ -78,6 +83,8 @@ void	Commands::cap(int userSocket, const std::string& message)
 	{
 		std::cout << GREEN << "token:" << token << std::endl << RESET;
 	}
+
+
 }
 
 bool	Server::usersExists(std::string nickname)
