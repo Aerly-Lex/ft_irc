@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/13 18:50:20 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/14 14:24:54 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@
 #define ERR_USERONCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 442 " + opname + " " + nickname + " " + channelname + " :User is already on channel" + CRLF)
 // ERR_NEEDMOREPARAMS (461)
 #define ERR_NEEDMOREPARAMS(nickname, command) (":" + std::string(SRV_NAME) + " 461 " + nickname + " " + command + " :Not enough parameters" + CRLF)
+// ERR_ALREADYREGISTRED (464)
+#define ERR_PASSWDMISMATCH(nickname) (":" + std::string(SRV_NAME) + " 464 " + nickname + " :Password incorrect" + CRLF)
 // ERR_INVITEONLYCHAN (473)
 #define ERR_INVITEONLYCHAN(nickname, channelname) (":" + std::string(SRV_NAME) + " 473 " + nickname + " " + channelname + " :Cannot join channel" + CRLF)
 // ERR_BADCHANNELKEY (475) if given wrong or no password for protected channel

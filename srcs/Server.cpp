@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/14 14:11:32 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/14 17:22:55 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,12 +237,10 @@ void	Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 
 	_users[fds[i].fd]._buffer += std::string(buffer, bytesRead);
 	buffer[bytesRead] = '\0'; // null-terminate the buffer
-	// std::string	message(buffer);
-	// std::cout << "User " << _users[fds[i].fd]._nickname << " sent: " << message << std::endl;
-	// handleUserCommand(fds[i].fd, message);
 
 	handleUserCommand(fds[i].fd, _users[fds[i].fd]._buffer);
 }
+
 // finds the target for the message and returns either the userSocket, -1 if its an existing channel or 0 if no target is found
 int		Server::findTarget(const std::string &target)
 {
@@ -265,8 +263,8 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 
 	std::cout << MAGENTA <<  "\t#Test#Message: " << message << std::endl;
 	std::cout << "\t#Test#Command: " << command << std::endl << RESET;
-	// USER Alfred 0 127.0.0.1 :1,8Alfred
-	if (_users[userSocket]._loginProcess == "END" || _users[userSocket]._loginProcess == "" )
+
+	if (_users[userSocket]._registered == false)
 		_commands.cap(userSocket, message);
 	else if (command == "JOIN")
 	{
@@ -288,6 +286,10 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		std::string	token;
 		iss >> token;
 		_commands.ping(userSocket);
+	}
+	else if (command == "USER")
+	{
+		welcomeMsg(userSocket);
 	}
 	else if (command == "KICK")
 	{
@@ -341,6 +343,13 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	else
 		(void)command; //unkown command RPL 421
 
+	if (!_users[userSocket]._buffer.empty())
+	{
+		size_t pos = _users[userSocket]._buffer.find('\n');
+		_users[userSocket]._buffer.erase(0, pos + 1);
+		std::cout << MAGENTA << "BUFFER: " << _users[userSocket]._buffer << "ENDOFBUFFER" << RESET << std::endl;
+		handleUserCommand(userSocket, _users[userSocket]._buffer);
+	}
 	_users[userSocket]._buffer.clear(); // clear the buffer after processing the message
 }
 
