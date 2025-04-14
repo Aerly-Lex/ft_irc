@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cap.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/12 16:35:35 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/14 13:58:29 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ void	Commands::cap(int userSocket, const std::string& message)
 		std::cout << GREEN << "LS" << std::endl << RESET;
 
 		std::string	capResponse = "CAP * LS :multi-prefix sasl\r\n";
-		sendTo(userSocket, capResponse);
-		return;
+		return sendTo(userSocket, capResponse);
 	}
 	else if (subCommand == "REQ")
 	{
@@ -43,8 +42,7 @@ void	Commands::cap(int userSocket, const std::string& message)
 		// gescheit Parsen
 		std::getline(iss, params);
 		std::string	capResponse = "CAP * ACK :multi-prefix\r\n"; // Andere Response möglich ??? oer msus das
-		sendTo(userSocket, capResponse);
-		return;
+		return sendTo(userSocket, capResponse);
 	}
 	else if (subCommand == "END")
 	{
@@ -52,10 +50,7 @@ void	Commands::cap(int userSocket, const std::string& message)
 		iss >> _users[userSocket]._password >> tmp >> _users[userSocket]._nickname;
 		iss >> tmp >> _users[userSocket]._userName >> tmp >> _users[userSocket]._hostName >> _users[userSocket]._realName;
 		if (_server.usersExists(_users[userSocket]._nickname))
-		{
-			sendTo(userSocket, ERR_NICKNAMEINUSE(_users[userSocket]._nickname));
-			return ;
-		}
+			return sendTo(userSocket, ERR_NICKNAMEINUSE(_users[userSocket]._nickname));
 		_users[userSocket]._realName.erase(0, 6);
 		_users[userSocket]._password.erase(0, 1);
 		_users[userSocket]._mask = _users[userSocket]._nickname + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName;

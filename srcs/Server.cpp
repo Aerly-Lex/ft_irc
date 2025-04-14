@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/13 19:01:36 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/14 13:54:20 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,11 @@ Server::~Server()
 //				getter					//
 //////////////////////////////////////////
 
-int				Server::getSocket() const
-{
-	return (_socket);
-}
-
-int				Server::getPort() const
-{
-	return (_port);
-}
-
-std::string		Server::getPassword() const
-{
-	return (_password);
-}
+int								Server::getSocket() const { return (_socket); }
+int								Server::getPort() const { return (_port); }
+std::string						Server::getPassword() const { return (_password); }
+std::map<int, User>&			Server::getUsers() { return (_users); }
+std::map<std::string, Channel>&	Server::getChannels() { return (_channels); }
 
 std::string		Server::getCreationTime() const
 {
@@ -60,17 +51,6 @@ std::string		Server::getCreationTime() const
 	timeStr.pop_back();
 	return timeStr;
 }
-
-std::map<int, User>&			Server::getUsers()
-{
-	return (_users);
-}
-
-std::map<std::string, Channel>&	Server::getChannels()
-{
-	return (_channels);
-}
-
 
 //////////////////////////////////////////
 //				class methods			//
@@ -336,7 +316,5 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 void sendTo(int fd, const std::string &message)
 {
 	if (send(fd, message.c_str(), message.size(), 0) == -1)
-	{
 		std::cerr << "Failed to send to fd: " << fd << std::endl;
-	}
 }
