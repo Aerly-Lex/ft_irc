@@ -16,7 +16,6 @@ class Channel
 		bool						_inviteOnly;
 		bool						_topic_rigths;
 
-		std::vector<std::string>	_banned;
 		std::set<std::string>		_invited;
 		std::map<int, std::string>	_members;
 		std::map<int, std::string>	_operators;
@@ -56,8 +55,6 @@ class Channel
 		void				broadcast(int userSocket, std::string Msg);
 		void				updateNickname(int socket, const std::string &newNick);
 
-		void				banUser(std::string &nick);
-		bool				isBanned(const std::string &nick) const;
 		bool				memberExists(const std::string &nick) const;
 
 		void				addMember(int userSocket, const std::string &nick);

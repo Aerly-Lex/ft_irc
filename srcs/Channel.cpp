@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/13 17:41:24 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/14 13:24:38 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,13 +104,6 @@ void	Channel::removeInvited(std::string nickname)
 	_invited.erase(nickname);
 }
 
-bool	Channel::isBanned(const std::string &nick) const // checks trough a vector if a "nick" is banned or not
-{
-	if (std::find(_banned.begin(), _banned.end(), nick) != _banned.end())
-		return true;
-	return false;
-}
-
 bool Channel::memberExists(const std::string &nick) const // checks if a nick is already in the _members map
 {
 	for (std::map<int, std::string>::const_iterator it = _members.begin(); it != _members.end(); ++it)
@@ -144,25 +137,11 @@ int		Channel::isMember(std::string nickName)
 
 void Channel::addMember(int userSocket, const std::string &nick) // adds a user to the _members map
 {
-	if (_members.count(userSocket) || memberExists(nick) || isBanned(nick))
+	if (_members.count(userSocket) || memberExists(nick))
 		return;
 	_members[userSocket] = nick;
 	if (_members.size() == 1 && _operators.empty())
 		_operators[userSocket] = nick;
-}
-
-void	Channel::banUser(std::string &nick)
-{
-	_banned.push_back(nick);
-	for (auto it = _members.begin(); it != _members.end(); it++)
-	{
-		if (it->second == nick)
-		{
-			_members.erase(it);
-			_operators.erase(it->first);
-			it = _members.begin();
-		}
-	}
 }
 
 void	Channel::addOperator(int userSocket, std::string &nick)
