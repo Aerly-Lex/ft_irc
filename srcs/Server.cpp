@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/14 17:22:55 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/14 17:25:59 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,11 @@ Server::~Server()
 //				getter					//
 //////////////////////////////////////////
 
-int				Server::getSocket() const
-{
-	return (_socket);
-}
-
-int				Server::getPort() const
-{
-	return (_port);
-}
-
-std::string		Server::getPassword() const
-{
-	return (_password);
-}
+int								Server::getSocket() const { return (_socket); }
+int								Server::getPort() const { return (_port); }
+std::string						Server::getPassword() const { return (_password); }
+std::map<int, User>&			Server::getUsers() { return (_users); }
+std::map<std::string, Channel>&	Server::getChannels() { return (_channels); }
 
 std::string		Server::getCreationTime() const
 {
@@ -60,17 +51,6 @@ std::string		Server::getCreationTime() const
 	timeStr.pop_back();
 	return timeStr;
 }
-
-std::map<int, User>&			Server::getUsers()
-{
-	return (_users);
-}
-
-std::map<std::string, Channel>&	Server::getChannels()
-{
-	return (_channels);
-}
-
 
 //////////////////////////////////////////
 //				class methods			//
@@ -85,9 +65,9 @@ void	Server::welcomeMsg(int userSocket)
 
 void	Server::signalHandler(int signum)
 {
-	// (void)signum; // Supress unused variable warning from www
-	Server::Signal	= true; // Set the signal flag to true
-	std::cout << RED << "Interrupt signal (" << signum << ") received. Exiting..." << RESET << std::endl;
+	const char *msg = "\nInterrupt signal received. Exiting...\n";
+	write(STDOUT_FILENO, msg, strlen(msg)); // because std::cout is buffered and would not flush
+	Server::Signal = true;
 }
 
 // use AF_INET in your struct sockaddr_in and PF_INET in your call to socket()
@@ -150,7 +130,11 @@ void		Server::run()
 		// poll() blocks till a event occurs
 		int ret = poll(fds.data(), fds.size(), -1);
 		if (ret == -1)
+		{
+			if (errno == EINTR) // Signal interrups poll
+				continue;		// Keep going until the signal is handled
 			throw std::runtime_error("Poll failed");
+		}
 
 		for (size_t i = 0; i < fds.size(); i++)
 		{
@@ -172,6 +156,9 @@ void		Server::run()
 			}
 		}
 	}
+	for (size_t i = 0; i < fds.size(); ++i)
+		close(fds[i].fd);
+	std::cout << GREEN << "Server shut down cleanly." << RESET << std::endl;
 }
 
 void	Server::acceptNewUsers(std::vector<pollfd>& fds)
@@ -314,6 +301,13 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 			topic.erase(0, 2);
 		_commands.topic(userSocket, channel, topic);
 	}
+	else if (command == "USER")
+	{
+		std::string userName, tmp, realName;
+		iss >> _users[userSocket]._nickname >> tmp >> tmp >> _users[userSocket]._realName >> realName ;
+		_users[userSocket]._realName.erase(0, 6);
+		_users[userSocket]._realName += " " + realName;
+	}
 	else if (command == "MODE")
 	{
 		// channel, flag, and the param == username if needed
@@ -356,7 +350,5 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 void sendTo(int fd, const std::string &message)
 {
 	if (send(fd, message.c_str(), message.size(), 0) == -1)
-	{
 		std::cerr << "Failed to send to fd: " << fd << std::endl;
-	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:16:04 by stopp             #+#    #+#             */
-/*   Updated: 2025/04/11 16:45:30 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/14 13:59:41 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,13 @@ void	Commands::mode(int userSocket, std::string channel, std::string flag, std::
 	if (flag.empty())
 	{
 		std::string modes = _channels[channel].getChannelModes();
-		sendTo(userSocket, RPL_CHANNELNAMEIS(_users[userSocket]._nickname, channel, modes));
-		return ;
+		return sendTo(userSocket, RPL_CHANNELNAMEIS(_users[userSocket]._nickname, channel, modes));
 	}
 	if (flag == "b")
 		return ;
 	//checking for operator
 	if (_channels[channel].isOperator(userSocket) == false)
-	{
-		sendTo(userSocket, ERR_CHANOPRIVSNEEDED(_users[userSocket]._nickname, channel));
-		return;
-	}
+		return sendTo(userSocket, ERR_CHANOPRIVSNEEDED(_users[userSocket]._nickname, channel));
 	// now parsing so it works for complex mode commands
 	char sign, c;
 	int paramIdx = 0;
@@ -72,7 +68,8 @@ void	Commands::mode(int userSocket, std::string channel, std::string flag, std::
 			case 'k': // changing channel key (password)
 				if (sign == '+')
 				{
-					if (paramIdx >= params.size()) {
+					if (paramIdx >= params.size())
+					{
 						sendTo(userSocket, ERR_INVALIDPARAM(_users[userSocket]._nickname, channel, "+k", "no password given"));
 						break ;
 					}
@@ -120,7 +117,8 @@ void	Commands::mode(int userSocket, std::string channel, std::string flag, std::
 			case 'l': // changing userLimit of the channel
 				if (sign == '+')
 				{
-					if (paramIdx >= params.size()) {
+					if (paramIdx >= params.size())
+					{
 						sendTo(userSocket, ERR_INVALIDPARAM(_users[userSocket]._nickname, channel, "+l", "no limit given"));
 						break ;
 					}

@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/14 17:22:01 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/14 17:34:54 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	Commands::pass(int userSocket,const std::string& password)
 {
-	if(password == _server.getPassword())
+	if (password == _server.getPassword())
 	{
 		std::cout << MAGENTA << "PASS: " << password << std::endl << RESET;
 		_users[userSocket]._password = password;
@@ -88,17 +88,15 @@ void	Commands::cap(int userSocket, const std::string& message)
 		_users[userSocket]._loginProcess = "DONE";
 	}
 
-	// _users[userSocket]._registered = true;
 	std::string	token;
 	while (iss >> token)
 	{
 		std::cout << GREEN << "token:" << token << std::endl << RESET;
 	}
 
-
 }
 
-bool	Server::usersExists(std::string nickname)
+bool	Server::usersExists(std::string nickname) ////////// ??
 {
 	int i = 0;
 	std::map<int, User>::iterator it = _users.begin();

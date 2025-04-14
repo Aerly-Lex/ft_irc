@@ -3,14 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 10:04:15 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/14 13:24:38 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/14 14:09:52 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/includes.hpp"
+
+//////////////////////////////////////////
+//				Constructor				//
+//////////////////////////////////////////
 
 Channel::Channel() {}
 
@@ -23,26 +27,26 @@ Channel::Channel(const std::string& name) : _name(name)
 	_topic_rigths = false;
 }
 
-Channel::~Channel()
-{
-}
+Channel::~Channel() {}
 
-std::string	Channel::getName() const { return _name; }
-std::string	Channel::getTopic() const { return _topic; }
-std::string	Channel::getPass() const{ return _password; }
-std::map<int, std::string>& Channel::getMembers() { return _members; }
-int			Channel::getUserLimit() const { return _userLimit; }
-std::string	Channel::getTopicData() const { return _topicData; }
-bool	Channel::isInviteOnly() const{ return _inviteOnly; }
-bool	Channel::isTopicRights() const { return _topic_rigths; }
+//////////////////////////////////////////
+//				getter					//
+//////////////////////////////////////////
+
+std::string					Channel::getName() const { return _name; }
+std::string					Channel::getTopic() const { return _topic; }
+std::string					Channel::getTopicData() const { return _topicData; }
+std::string					Channel::getPass() const{ return _password; }
+int							Channel::getUserLimit() const { return _userLimit; }
+bool						Channel::isInviteOnly() const{ return _inviteOnly; }
+bool						Channel::isTopicRights() const { return _topic_rigths; }
+std::map<int, std::string>&	Channel::getMembers() { return _members; }
 
 int	Channel::getSocket(std::string nickname)
 {
 	for (auto it = _members.begin(); it != _members.end(); it++)
-	{
 		if (it->second == nickname)
 			return (it->first);
-	}
 	return (0);
 }
 
@@ -82,6 +86,10 @@ bool	Channel::isInvited(std::string &user) const
 	return false;
 }
 
+//////////////////////////////////////////
+//				setter					//
+//////////////////////////////////////////
+
 void	Channel::setName(std::string &name) { _name = name; }
 void	Channel::setTopic(std::string &topic) { _topic = topic; }
 void	Channel::setPass(std::string password) { _password = password; }
@@ -93,6 +101,10 @@ void	Channel::setTopicData(std::string &userMask)
 {
 	_topicData = std::string(userMask + " " + std::to_string(std::time(nullptr)));
 }
+
+//////////////////////////////////////////
+//				class methods			//
+//////////////////////////////////////////
 
 void	Channel::addInvited(std::string &nickname)
 {
@@ -150,17 +162,13 @@ void	Channel::addOperator(int userSocket, std::string &nick)
 		_operators[userSocket] = nick;
 }
 
-
 void Channel::broadcast(int userSocket, std::string Msg)
 {
 	std::cout << Msg << std::endl;
 	for (auto it = _members.begin(); it != _members.end(); it++)
-	{
 		if (userSocket != it->first)
 			sendTo(it->first, Msg);
-	}
 }
-
 
 void Channel::updateNickname(int socket, const std::string& newNick)
 {
@@ -180,15 +188,3 @@ void Channel::removeMember(int userSocket)
 	_members.erase(userSocket);
 	_operators.erase(userSocket);
 }
-
-
-// void	Channel::broadcastMessage(int clientSocket, const std::string& message)
-// {
-// 	for (int member : _members)
-// 	{
-// 		if (member != clientSocket)
-// 		{
-// 			sendMessage(member, message);
-// 		}
-// 	}
-// }
