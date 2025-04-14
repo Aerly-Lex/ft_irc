@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/12 16:35:35 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/14 13:31:00 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,11 @@ void	Commands::cap(int userSocket, const std::string& message)
 		return;
 	}
 
+
+	if (_users[userSocket]._password != _server.getPassword())
+	{
+		//kick user
+	}
 	if (_users[userSocket]._loginProcess == "END")
 	{
 		// if (_users[userSocket]._password == ) // NC fixen!
@@ -83,6 +88,8 @@ void	Commands::cap(int userSocket, const std::string& message)
 	{
 		std::cout << GREEN << "token:" << token << std::endl << RESET;
 	}
+
+
 }
 
 bool	Server::usersExists(std::string nickname)

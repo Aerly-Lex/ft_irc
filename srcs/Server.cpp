@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/13 19:01:36 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/14 14:11:32 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ void		Server::run()
 		if (ret == -1)
 			throw std::runtime_error("Poll failed");
 
-		for (size_t i = 0; i < fds.size(); i++) // to slim the function
+		for (size_t i = 0; i < fds.size(); i++)
 		{
 			if (fds[i].revents & POLLIN)
 			{
@@ -182,28 +182,28 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 	if (userSocket == -1)
 	throw std::runtime_error("Failed to accept incoming connection");
 
-// create a new User object and add to map
-User	newUser(userSocket);
-newUser._socket = userSocket;
-newUser._nickname = "Nick" + std::to_string(userSocket);
-newUser._userName = "";
-newUser._realName = "";
-newUser._password = "";
-newUser._hostName = inet_ntoa(userAddr.sin_addr); // saving IP-Adress as hostname
-// newUser._hostName = "";
+	// create a new User object and add to map
+	User	newUser(userSocket);
+	newUser._socket = userSocket;
+	newUser._nickname = "Nick" + std::to_string(userSocket);
+	newUser._userName = "";
+	newUser._realName = "";
+	newUser._password = "";
+	newUser._hostName = inet_ntoa(userAddr.sin_addr); // saving IP-Adress as hostname
+	// newUser._hostName = "";
 
-// newUser._ipAddress = inet_ntoa(userAddr.sin_addr); // saving IP-Adress
-newUser._registered = false;
-_users[userSocket] = newUser;
+	// newUser._ipAddress = inet_ntoa(userAddr.sin_addr); // saving IP-Adress
+	newUser._registered = false;
+	_users[userSocket] = newUser;
 
-// adding the new user socket to poll-fd list
-pollfd	user_fd;
-user_fd.fd = userSocket;
-user_fd.events = POLLIN;
-fds.push_back(user_fd);
+	// adding the new user socket to poll-fd list
+	pollfd	user_fd;
+	user_fd.fd = userSocket;
+	user_fd.events = POLLIN;
+	fds.push_back(user_fd);
 
-std::cout << "New User connected: " << userSocket << std::endl;
-std::cout << "Total Users: " << fds.size() - 1 << std::endl;
+	std::cout << "New User connected: " << userSocket << std::endl;
+	std::cout << "Total Users: " << fds.size() - 1 << std::endl;
 }
 
 void Server::removeUserFromAllChannels(int socket)
@@ -224,15 +224,24 @@ void	Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 		close(fds[i].fd);
 		_users.erase(fds[i].fd); // remove the user from the map
 		fds.erase(fds.begin() + i); // remove the user from the pollfd list
-		// i--;
 		return;
 	}
 
-	buffer[bytesRead] = '\0'; // null-terminate the buffer
-	std::string	message(buffer);
-	std::cout << "User " << _users[fds[i].fd]._nickname << " sent: " << message << std::endl;
+	if (buffer[bytesRead - 1] != '\n') // eof?
+	{
+		std::cerr << RED << "Message not null-terminated" << RESET << std::endl;
+		_users[fds[i].fd]._buffer += std::string(buffer, bytesRead);
+		std::cerr << RED << "BUFFER: " << _users[fds[i].fd]._buffer << RESET << std::endl;
+		return;
+	}
 
-	handleUserCommand(fds[i].fd, message);
+	_users[fds[i].fd]._buffer += std::string(buffer, bytesRead);
+	buffer[bytesRead] = '\0'; // null-terminate the buffer
+	// std::string	message(buffer);
+	// std::cout << "User " << _users[fds[i].fd]._nickname << " sent: " << message << std::endl;
+	// handleUserCommand(fds[i].fd, message);
+
+	handleUserCommand(fds[i].fd, _users[fds[i].fd]._buffer);
 }
 // finds the target for the message and returns either the userSocket, -1 if its an existing channel or 0 if no target is found
 int		Server::findTarget(const std::string &target)
@@ -331,6 +340,8 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	}
 	else
 		(void)command; //unkown command RPL 421
+
+	_users[userSocket]._buffer.clear(); // clear the buffer after processing the message
 }
 
 void sendTo(int fd, const std::string &message)
