@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/15 11:22:03 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/15 11:25:51 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,10 +274,6 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		std::string	token;
 		iss >> token;
 		_commands.ping(userSocket);
-	}
-	else if (command == "USER") // is necessary for the user to register
-	{
-		welcomeMsg(userSocket);
 	}
 	else if (command == "KICK") 	// kicks a user from a channel
 	{
