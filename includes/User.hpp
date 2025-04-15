@@ -11,7 +11,6 @@ class User
 		std::string		_realName;
 		std::string		_password;
 		std::string		_hostName;
-		std::string		_ipAddress;
 		std::string		_mask;
 		std::string		_buffer;
 

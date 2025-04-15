@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/14 14:24:54 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/15 16:48:44 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@
 // ERR_NOSUCHCHANNEL (403)
 #define ERR_NOSUCHCHANNEL(nick, channel) (":" + std::string(SRV_NAME) + " 403 " + nick + " " + channel + " :No such channel" + CRLF)
 
+// ERR_UNKNOWNCOMMAND (421)
+#define ERR_UNKNOWNCOMMAND(nickname, command) (":" + std::string(SRV_NAME) + " 421 " + nickname + " " + command + " :Unknown command" + CRLF)
 
 // ERR_USERNOTINCHANNEL (441)
 #define ERR_USERNOTINCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 441 " + opname + " " + nickname + " " + channelname + " :User not in the Channel" + CRLF)

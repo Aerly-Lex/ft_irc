@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:16:04 by stopp             #+#    #+#             */
-/*   Updated: 2025/04/14 13:59:41 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/15 16:27:57 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	Commands::mode(int userSocket, std::string channel, std::string flag, std::
 	if (_channels[channel].isOperator(userSocket) == false)
 		return sendTo(userSocket, ERR_CHANOPRIVSNEEDED(_users[userSocket]._nickname, channel));
 	// now parsing so it works for complex mode commands
-	char sign, c;
-	int paramIdx = 0;
-	int limit;
+	char	sign, c;
+	int		paramIdx = 0;
+	int		limit;
 	std::string nickname;
 
 	for(int i = 0; i < flag.size(); i++)

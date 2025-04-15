@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:09:28 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/08 16:00:26 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/15 14:48:37 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 class User;
 class Channel;
-// class Commands;
 
 class Server
 {
@@ -60,5 +59,3 @@ class Server
 		void	welcomeMsg(int userSocket);
 		int		findTarget(const std::string &target);
 };
-
-void	sendTo(int fd, const std::string &message);
