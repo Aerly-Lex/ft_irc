@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/14 17:25:59 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/15 11:22:03 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,45 +253,46 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 
 	if (_users[userSocket]._registered == false)
 		_commands.cap(userSocket, message);
-	else if (command == "JOIN")
+
+	else if (command == "JOIN") // joins a channel
 	{
 		std::cout << MAGENTA << "JOIN" << std::endl << RESET;
 		std::string	channelName, password;
 		iss >> channelName >> password;
 		_commands.join(userSocket, channelName, password);
 	}
-	else if (command == "NICK")
+	else if (command == "NICK") // changes or sets the nickname of the user
 	{
 		std::string	nickName;
 		iss >> nickName;
 		std::cout << MAGENTA << "NICK: " << nickName << std::endl << RESET;
 		_commands.nick(userSocket, nickName);
 	}
-	else if (command == "PING")
+	else if (command == "PING") // ping the server to check if its alive
 	{
 		std::cout << MAGENTA << "PING" << std::endl << RESET;
 		std::string	token;
 		iss >> token;
 		_commands.ping(userSocket);
 	}
-	else if (command == "USER")
+	else if (command == "USER") // is necessary for the user to register
 	{
 		welcomeMsg(userSocket);
 	}
-	else if (command == "KICK")
+	else if (command == "KICK") 	// kicks a user from a channel
 	{
 		std::string chnlName, nickName, reason;
 		iss >> chnlName >> nickName >> reason;
 		_commands.kick(userSocket, chnlName, nickName, reason);
 	}
-	else if (command == "INVITE")
+	else if (command == "INVITE") 	// invits a user to a channel
 	{
 		std::string target, channel;
 		iss >> target >> channel;
 		_commands.invite(userSocket, target, channel);
 		std::cout << "INVITE" << std::endl;
 	}
-	else if (command == "TOPIC")
+	else if (command == "TOPIC") 	// changes or gets the topic of a channel
 	{
 		std::cout << "TOPIC" << std::endl;
 		std::string channel, topic;
@@ -301,14 +302,14 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 			topic.erase(0, 2);
 		_commands.topic(userSocket, channel, topic);
 	}
-	else if (command == "USER")
+	else if (command == "USER") 	// reads the input from the user
 	{
 		std::string userName, tmp, realName;
 		iss >> _users[userSocket]._nickname >> tmp >> tmp >> _users[userSocket]._realName >> realName ;
 		_users[userSocket]._realName.erase(0, 6);
 		_users[userSocket]._realName += " " + realName;
 	}
-	else if (command == "MODE")
+	else if (command == "MODE") 	// sets the mode of a channel and based on the mode sets the usermode
 	{
 		// channel, flag, and the param == username if needed
 		std::string channel, flag, param;
@@ -318,15 +319,17 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 			params.push_back(param);
 		_commands.mode(userSocket, channel, flag, params);
 	}
-	else if (command == "QUIT")
+	else if (command == "QUIT") 	// disconnects the user from the server
+	{
 		_commands.quit(userSocket);
-	else if (command == "PART") // part == leave channel
+	}
+	else if (command == "PART") 	// leaves a channel
 	{
 		std::string chan;
 		iss >> chan;
 		_commands.part(userSocket, chan);
 	}
-	else if (command == "PRIVMSG")
+	else if (command == "PRIVMSG") 	// sends a message to a user or channel
 	{
 		std::string target, message;
 		iss >> target;
@@ -334,17 +337,17 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		std::cout << RED << message << std::endl;
 		_commands.privmsg(userSocket, _users[userSocket]._mask, target, message);
 	}
-	else
-		(void)command; //unkown command RPL 421
+	else							// handles unknown commands or commands that are not mandatory
+		sendTo(userSocket, ERR_UNKNOWNCOMMAND(_users[userSocket]._nickname, command)); // for unkown commands (or not mandatory edgecases)
 
-	if (!_users[userSocket]._buffer.empty())
+	size_t pos;
+	while ((pos = _users[userSocket]._buffer.find("\r\n")) != std::string::npos)
 	{
-		size_t pos = _users[userSocket]._buffer.find('\n');
-		_users[userSocket]._buffer.erase(0, pos + 1);
-		std::cout << MAGENTA << "BUFFER: " << _users[userSocket]._buffer << "ENDOFBUFFER" << RESET << std::endl;
-		handleUserCommand(userSocket, _users[userSocket]._buffer);
+		std::string line = _users[userSocket]._buffer.substr(0, pos);
+		_users[userSocket]._buffer.erase(0, pos + 2);
+		std::cout << MAGENTA << "BUFFER: " << line << "ENDOFBUFFER" << RESET << std::endl;
+		handleUserCommand(userSocket, line);
 	}
-	_users[userSocket]._buffer.clear(); // clear the buffer after processing the message
 }
 
 void sendTo(int fd, const std::string &message)
