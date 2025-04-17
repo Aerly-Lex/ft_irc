@@ -15,3 +15,4 @@
 #include "includes.hpp"
 
 void	sendTo(int fd, const std::string &message);
+bool	isOnlyWhitespace(const std::string &str);

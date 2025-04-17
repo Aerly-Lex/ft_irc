@@ -63,7 +63,6 @@
 #define RPL_NICKCHANGE(oldnickname, nickname) (std::string(":" + oldnickname + " NICK " + nickname + CRLF))
 #define ERR_NONICKNAMEGIVEN() (":" + std::string(SRV_NAME) + " 431 * :No nickname given" + CRLF)
 #define ERR_NOTREGISTERED() (":" + std::string(SRV_NAME) + " 451 * :You have not registered" + CRLF)
-#define ERR_NICKNAMEINUSE(nickname) (std::string(":" + std::string(SRV_NAME) + " 433 " + nickname + " :Nickname is already in use" + CRLF))
 // there is a max len for nick appearantly... 9 chars - didnt test yet
 // 401 - NOSUCHNICK  if there is no such nickname or channel
 #define ERR_NOSUCHNICK(nickname, target) (":" + std::string(SRV_NAME) + " 401 " + nickname + target + " :No such nick/channel" + CRLF)
@@ -72,7 +71,8 @@
 
 // ERR_UNKNOWNCOMMAND (421)
 #define ERR_UNKNOWNCOMMAND(nickname, command) (":" + std::string(SRV_NAME) + " 421 " + nickname + " " + command + " :Unknown command" + CRLF)
-
+// ERR_NICKNAMEINUSE (433)
+#define ERR_NICKNAMEINUSE(currNick, newNick) (":" + std::string(SRV_NAME) + " 433 " + currNick + " " + newNick + " :Nickname is already in use" + CRLF)
 // ERR_USERNOTINCHANNEL (441)
 #define ERR_USERNOTINCHANNEL(opname, nickname, channelname) (":" + std::string(SRV_NAME) + " 441 " + opname + " " + nickname + " " + channelname + " :User not in the Channel" + CRLF)
 // ERR_NOTONCHANNEL (442)

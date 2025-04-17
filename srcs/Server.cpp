@@ -239,17 +239,126 @@ int		Server::findTarget(const std::string &target)
 		return (0);
 }
 
+void Server::handleUserCommand(int userSocket, const std::string& message)
+{
+	std::istringstream iss(message);
+	std::string command;
+	iss >> command;
+
+	std::cout << MAGENTA << "\t#Test#Message: " << message << std::endl;
+	std::cout << "\t#Test#Command: " << command << std::endl << RESET;
+
+	if (_users[userSocket]._registered == false)
+	{
+		std::cout << YELLOW << "User not registered yet" << std::endl << RESET;
+		_commands.cap(userSocket, message);
+	}
+	else if (command == "JOIN")
+	{
+		std::string channelName, password;
+		iss >> channelName >> password;
+		_commands.join(userSocket, channelName, password);
+	}
+	else if (command == "NICK")
+	{
+		std::string nickName;
+		iss >> nickName;
+		_commands.nick(userSocket, nickName);
+	}
+	else if (command == "PING")
+	{
+		std::string token;
+		iss >> token;
+		_commands.ping(userSocket);
+	}
+	else if (command == "KICK")
+	{
+		std::string channelName, nickName, reason;
+		iss >> channelName >> nickName >> reason;
+		_commands.kick(userSocket, channelName, nickName, reason);
+	}
+	else if (command == "INVITE")
+	{
+		std::string target, channel;
+		iss >> target >> channel;
+		_commands.invite(userSocket, target, channel);
+	}
+	else if (command == "TOPIC")
+	{
+		std::string channel, topic;
+		iss >> channel;
+		std::getline(iss, topic);
+		if (!topic.empty())
+			topic.erase(0, 2);
+		_commands.topic(userSocket, channel, topic);
+	}
+	else if (command == "USER")
+	{
+		std::string userName, tmp, realName;
+		iss >> _users[userSocket]._nickname >> tmp >> tmp >> _users[userSocket]._realName >> realName;
+		_users[userSocket]._realName.erase(0, 6);
+		_users[userSocket]._realName += " " + realName;
+		welcomeMsg(userSocket);
+	}
+	else if (command == "MODE")
+	{
+		std::string channel, flag, param;
+		std::vector<std::string> params;
+		iss >> channel >> flag;
+		while (iss >> param)
+			params.push_back(param);
+		_commands.mode(userSocket, channel, flag, params);
+	}
+	else if (command == "QUIT")
+	{
+		_commands.quit(userSocket);
+	}
+	else if (command == "PART")
+	{
+		std::string channel;
+		iss >> channel;
+		_commands.part(userSocket, channel);
+	}
+	else if (command == "PRIVMSG")
+	{
+		std::string target, messageContent;
+		iss >> target;
+		std::getline(iss, messageContent);
+		_commands.privmsg(userSocket, _users[userSocket]._mask, target, messageContent);
+	}
+	else if (!command.empty())
+	{
+		std::cout << MAGENTA << "Unknown command received: [" << command << "]" << RESET << std::endl;
+		sendTo(userSocket, ERR_UNKNOWNCOMMAND(_users[userSocket]._nickname, command));
+	}
+	if (!_users[userSocket]._buffer.empty() && !isOnlyWhitespace(_users[userSocket]._buffer))
+	{
+		size_t pos = _users[userSocket]._buffer.find('\n');
+		if (pos != std::string::npos)
+			_users[userSocket]._buffer.erase(0, pos + 1);
+		std::cout << MAGENTA << "BUFFER: " << _users[userSocket]._buffer << "ENDOFBUFFER" << RESET << std::endl;
+		handleUserCommand(userSocket, _users[userSocket]._buffer);
+	}
+	_users[userSocket]._buffer.clear();
+}
+
+// Alte Funktion - falls die neue wie mit KVirc nicht funktioniert
+/*
 void	Server::handleUserCommand(int userSocket, const std::string& message)
 {
 	std::istringstream	iss(message);
 	std::string			command;
 	iss >> command;
-
+	if (command.empty())
+		return; // empty command, do nothing
 	std::cout << MAGENTA <<  "\t#Test#Message: " << message << std::endl;	//tester kann entferntw werden
 	std::cout << "\t#Test#Command: " << command << std::endl << RESET;	//tester kann entferntw werden
 
 	if (_users[userSocket]._registered == false)
+	{
+		std::cout << YELLOW << "User not registered yet" << std::endl << RESET; // tester kann entfernt werden
 		_commands.cap(userSocket, message);
+	}
 	else if (command == "JOIN")
 	{
 		std::cout << MAGENTA << "JOIN" << std::endl << RESET;
@@ -348,3 +457,4 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	}
 	_users[userSocket]._buffer.clear(); // clear the buffer after processing the message
 }
+*/

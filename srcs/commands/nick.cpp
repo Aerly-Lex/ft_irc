@@ -26,7 +26,7 @@ void	Commands::nick(int userSocket, const std::string& newNickname)
 	for (const auto& [sock, user] : _users)
 	{
 		if (user._nickname == newNickname)
-			return sendTo(userSocket, ERR_NICKNAMEINUSE(newNickname));
+			return sendTo(userSocket, ERR_NICKNAMEINUSE(_users[userSocket]._nickname, newNickname));
 	}
 	std::string oldNickname = _users[userSocket]._nickname;
 	_users[userSocket]._nickname = newNickname;

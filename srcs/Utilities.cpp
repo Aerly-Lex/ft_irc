@@ -17,3 +17,13 @@ void	sendTo(int fd, const std::string &message)
 	if (send(fd, message.c_str(), message.size(), 0) == -1)
 		std::cerr << "Failed to send to fd: " << fd << std::endl;
 }
+
+bool isOnlyWhitespace(const std::string& str)
+{
+	for (size_t i = 0; i < str.size(); ++i)
+	{
+		if (!isspace(str[i]))
+			return false;
+	}
+	return true;
+}
