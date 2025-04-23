@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/11 18:00:26 by stopp            ###   ########.fr       */
+/*   Updated: 2025/04/15 13:55:07 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,71 +53,19 @@ int	main(int argc, char **argv)
 	}
 	return 0;
 }
-/*
-General ToDo:
-commands: part, quit!
 
-ALLOWED FUNCTIONS, among others:
-setsockopt, getsockname,
-getprotobyname, gethostbyname, getaddrinfo,
-freeaddrinfo, connect, accept, htons,
-htonl, ntohs, ntohl, inet_addr, inet_ntoa,
-sigaction, lseek, fstat, fcntl,
-USED:
-socket, close, bind, listen, poll, recv, signal, send,
+/*
+toTest:
+Memory leaks -> destructor im server.cpp
 
 REQUIREMENTS:
-> Server must handle multiple clients at the same time and never hang
-
-> Forking is not allowed. All I/O operations must be non-blocking.
-
-> Only 1 poll() (or equivalent) can be used for handling all these operations (read, write, but also listen, and so forth).
-Because you have to use non-blocking file descriptors, it is possible to use read/recv or write/send functions with no poll()
-(or equivalent), and your server wouldn’t be blocking.
-But it would consume more system resources.
-Thus, if you try to read/recv or write/send in any file descriptor without using poll() (or equivalent), your grade will be 0.
-
-> Communication between client and server has to be done via TCP/IP (v4 or v6).
-
-> Using your reference client with your server must be similar to using it with any official IRC server. However, you only have to implement the following features:
-> You must be able to	authenticate
-						set a nickname
-						a username
-						join a channel
-						send and receive private messages using your reference client.
-> All the messages sent from one client to a channel have to be forwarded to every other client that joined the channel.
-> You must have operators and regular users.
-
-> CHANNEL OPERATOR COMMANDS:
-	∗ KICK - Eject a client from the channel
-	∗ INVITE - Invite a client to a channel
-	∗ TOPIC - Change or view the channel topic
-	∗ MODE - Change the channel’s mode:
-		- i: Set/remove Invite-only channel
-		- t: Set/remove the restrictions of the TOPIC command to channel operators
-		- k: Set/remove the channel key (password)
-		- o: Give/take channel operator privilege
-		- l: Set/remove the user limit to channel
-
 
 ONLY FOR MACOS
 Since MacOS doesn’t implement write() the same way as other Unix OSes, you are allowed to use fcntl().
 You must use file descriptors in non-blocking mode in order to get a
 behavior similar to the one of other Unix OSes.
 
-However, you are allowed to use fcntl() only as follows:
-fcntl(fd, F_SETFL, O_NONBLOCK);
-Any other flag is forbidden.
-
-
 TEST EXAMPLES
-Verify absolutely every possible error and issue (receiving partial data, low bandwidth, and so forth).
-To ensure that your server correctly processes everything that you send to it, the
-following simple test using nc can be done:
 \$> nc -C 127.0.0.1 6667
 com^Dman^Dd
-\$>
-Use ctrl+D to send the command in several parts: ’com’, then ’man’, then ’d\n’.
-In order to process a command, you have to first aggregate the received packets in
-order to rebuild it.
 */

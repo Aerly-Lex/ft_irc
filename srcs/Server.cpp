@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/15 11:25:51 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/15 14:20:20 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void		Server::initServer()
 	serverAddress.sin_addr.s_addr = INADDR_ANY; // INADDR_ANY: any address for binding
 	serverAddress.sin_port = htons(_port); // htons: host to network short converts values between host and network (network-format)
 
-	//this makes sure we can reuse the adress/port after it closes instead of waiting for a timeout.
+	// this makes sure we can reuse the adress/port after it closes instead of waiting for a timeout.
 	int re = 1;
 	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &re, sizeof(re)) == -1)
 		throw(std::runtime_error("ERROR: setsockopt failed"));
@@ -200,33 +200,35 @@ void Server::removeUserFromAllChannels(int socket)
 	_users.erase(socket);
 }
 
-void	Server::handleUserMessage(std::vector<pollfd>& fds, int i)
+void Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 {
-	char	buffer[1024] = {0};
-	int		bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+	char buffer[1024];
+	int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
 
-	if (bytesRead <= 0) // 0 for disconnection, -1 for error
+	if (bytesRead <= 0)
 	{
 		std::cout << "User " << fds[i].fd << " disconnected" << std::endl;
 		close(fds[i].fd);
-		_users.erase(fds[i].fd); // remove the user from the map
-		fds.erase(fds.begin() + i); // remove the user from the pollfd list
+		_users.erase(fds[i].fd);
+		fds.erase(fds.begin() + i);
 		return;
 	}
 
-	if (buffer[bytesRead - 1] != '\n') // eof?
-	{
-		std::cerr << RED << "Message not null-terminated" << RESET << std::endl;
-		_users[fds[i].fd]._buffer += std::string(buffer, bytesRead);
-		std::cerr << RED << "BUFFER: " << _users[fds[i].fd]._buffer << RESET << std::endl;
-		return;
-	}
-
+	// Append received data to user's buffer
 	_users[fds[i].fd]._buffer += std::string(buffer, bytesRead);
-	buffer[bytesRead] = '\0'; // null-terminate the buffer
 
-	handleUserCommand(fds[i].fd, _users[fds[i].fd]._buffer);
+	// Process all complete commands (ending with \r\n)
+	size_t pos;
+	while ((pos = _users[fds[i].fd]._buffer.find("\r\n")) != std::string::npos)
+	{
+		std::string line = _users[fds[i].fd]._buffer.substr(0, pos);
+		_users[fds[i].fd]._buffer.erase(0, pos + 2);
+
+		std::cout << MAGENTA << "COMMAND: " << line << RESET << std::endl;
+		handleUserCommand(fds[i].fd, line);
+	}
 }
+
 
 // finds the target for the message and returns either the userSocket, -1 if its an existing channel or 0 if no target is found
 int		Server::findTarget(const std::string &target)
@@ -325,25 +327,24 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		iss >> chan;
 		_commands.part(userSocket, chan);
 	}
-	else if (command == "PRIVMSG") 	// sends a message to a user or channel
+	else if (command == "PRIVMSG")
 	{
 		std::string target, message;
 		iss >> target;
 		std::getline(iss, message);
-		std::cout << RED << message << std::endl;
+
+		// Remove leading spaces and colons from the message (important for nc console)
+		if (!message.empty() && message[0] == ' ')
+			message.erase(0, 1);
+		if (!message.empty() && message[0] == ':')
+			message.erase(0, 1);
+
+		std::cout << RED << "Message: " << message << RESET << std::endl;
 		_commands.privmsg(userSocket, _users[userSocket]._mask, target, message);
 	}
+
 	else							// handles unknown commands or commands that are not mandatory
 		sendTo(userSocket, ERR_UNKNOWNCOMMAND(_users[userSocket]._nickname, command)); // for unkown commands (or not mandatory edgecases)
-
-	size_t pos;
-	while ((pos = _users[userSocket]._buffer.find("\r\n")) != std::string::npos)
-	{
-		std::string line = _users[userSocket]._buffer.substr(0, pos);
-		_users[userSocket]._buffer.erase(0, pos + 2);
-		std::cout << MAGENTA << "BUFFER: " << line << "ENDOFBUFFER" << RESET << std::endl;
-		handleUserCommand(userSocket, line);
-	}
 }
 
 void sendTo(int fd, const std::string &message)
