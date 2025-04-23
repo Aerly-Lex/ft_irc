@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:00:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/15 13:55:07 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/15 16:43:46 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,37 @@ int	main(int argc, char **argv)
 	}
 	return 0;
 }
-
 /*
-toTest:
-Memory leaks -> destructor im server.cpp
+General ToDo:
+im server.cpp:
 
-REQUIREMENTS:
+Fix unknown command!
+	Antwort von chorst: Ja, das ist ein Bug. Ich habs gefixed. Das war ein Fehler in der handleUserCommand() Funktion. Ich hab die Funktion so umgeschrieben, dass sie jetzt den richtigen Fehler zurückgibt. Die alte Funktion hab ich auskommentiert, falls die neue wieder Probleme macht.
 
-ONLY FOR MACOS
-Since MacOS doesn’t implement write() the same way as other Unix OSes, you are allowed to use fcntl().
-You must use file descriptors in non-blocking mode in order to get a
-behavior similar to the one of other Unix OSes.
+Do we need WHO command?
+	Antwort von chorst: Nein das ist nicht mandatory
+
+There is NOTICE command?
+	Antwort von chorst: Ja, aber nicht mandatory denn dafür gibt es "privmsg" im projekt (NOTICE ist sowas wie der kleine Bruder von privmsg)
+
+User.cpp kann gelöscht werden I guess
+	Anwort von chorst: Ja, kann es und ich habs grad getan
+
+Doppelter Nickname in use - es kommt kein fehlermessage, dass nickname bereits vorhanden ist
+	Antwort von chorst: Habs gefixed. Der ERR_NICKNAMEINUSE war falsch definiert und das ging vorher wegen dem fehlerhaften ERR_NICKNAMEINUSE-Makro nicht korrekt.
+
+Christopher:
+Extra funktion in utility packen, dass es whitespaces überspringen soll, entfernen soll keine ahnung, un die pos zuruckgeben
+Goal: Ob im String nur noch spaces und \0 sind
+Das ist notwendig im Server.cpp - server::handleusercommand, ganz unten
+	if (!_users[userSocket]._buffer.empty())
+	Antwort von chorst: Ja, das ist notwendig. Ich habs jetzt so gemacht, dass ich den String mit isOnlyWhitespace() überprüfe und dann die Funktion handleUserCommand() aufrufe. Das ist jetzt in der Server.cpp drin.
 
 TEST EXAMPLES
 \$> nc -C 127.0.0.1 6667
 com^Dman^Dd
 */
+
+// /* ************************************************************************** */
+// /*	ICH HAB ALLE FUNKTIONEN GETESTET UND ALLES FUNKTIONIERT WIE ES SOLL (chorst)	*/
+// /* **************************************************************************** */

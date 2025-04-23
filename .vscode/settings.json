@@ -62,6 +62,20 @@
 		"type_traits": "cpp",
 		"typeinfo": "cpp",
 		"utility": "cpp",
-		"vector": "cpp"
+		"vector": "cpp",
+		"*.tcc": "cpp",
+		"charconv": "cpp",
+		"clocale": "cpp",
+		"compare": "cpp",
+		"concepts": "cpp",
+		"deque": "cpp",
+		"memory_resource": "cpp",
+		"numeric": "cpp",
+		"random": "cpp",
+		"format": "cpp",
+		"iomanip": "cpp",
+		"numbers": "cpp",
+		"span": "cpp",
+		"variant": "cpp"
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 12:03:32 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/15 14:20:20 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/15 16:40:09 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,10 @@ Server::Server(int port, std::string password)
 
 Server::~Server()
 {
+	for (size_t i = 0; i < _fds.size(); ++i)
+		close(_fds[i].fd);
+	std::cout << GREEN << "Server shut down cleanly." << RESET << std::endl;
 	close(_socket);
-	// close all users/channels?
 }
 
 //////////////////////////////////////////
@@ -65,7 +67,7 @@ void	Server::welcomeMsg(int userSocket)
 
 void	Server::signalHandler(int signum)
 {
-	const char *msg = "\nInterrupt signal received. Exiting...\n";
+	const char	*msg = "\nInterrupt signal received. Exiting...\n";
 	write(STDOUT_FILENO, msg, strlen(msg)); // because std::cout is buffered and would not flush
 	Server::Signal = true;
 }
@@ -93,16 +95,15 @@ void		Server::initServer()
 	serverAddress.sin_addr.s_addr = INADDR_ANY; // INADDR_ANY: any address for binding
 	serverAddress.sin_port = htons(_port); // htons: host to network short converts values between host and network (network-format)
 
-	// this makes sure we can reuse the adress/port after it closes instead of waiting for a timeout.
-	int re = 1;
+	//this makes sure we can reuse the adress/port after it closes instead of waiting for a timeout.
+	int	re = 1;
 	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &re, sizeof(re)) == -1)
 		throw(std::runtime_error("ERROR: setsockopt failed"));
 
-//	int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 	if (bind(_socket, (sockaddr*)&serverAddress, sizeof(serverAddress)) == -1)
 		throw std::runtime_error("Failed to bind the socket to the address");
 
-	//making it nonblocking on MacOS:
+	// making it nonblocking on MacOS:
 	if (fcntl(_socket, F_SETFL, O_NONBLOCK) == -1)
 		throw(std::runtime_error("ERROR: fcntl failed"));
 
@@ -156,9 +157,6 @@ void		Server::run()
 			}
 		}
 	}
-	for (size_t i = 0; i < fds.size(); ++i)
-		close(fds[i].fd);
-	std::cout << GREEN << "Server shut down cleanly." << RESET << std::endl;
 }
 
 void	Server::acceptNewUsers(std::vector<pollfd>& fds)
@@ -177,9 +175,7 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 	newUser._realName = "";
 	newUser._password = "";
 	newUser._hostName = inet_ntoa(userAddr.sin_addr); // saving IP-Adress as hostname
-	// newUser._hostName = "";
 
-	// newUser._ipAddress = inet_ntoa(userAddr.sin_addr); // saving IP-Adress
 	newUser._registered = false;
 	_users[userSocket] = newUser;
 
@@ -214,7 +210,14 @@ void Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 		return;
 	}
 
-	// Append received data to user's buffer
+	if (buffer[bytesRead - 1] != '\n')
+	{
+		std::cerr << RED << "Message not null-terminated" << RESET << std::endl; // kann entfernt werden - tester mess
+		_users[fds[i].fd]._buffer += std::string(buffer, bytesRead);
+		std::cerr << RED << "BUFFER: " << _users[fds[i].fd]._buffer << RESET << std::endl; // kann entfernt werden - tester mess
+		return;
+	}
+
 	_users[fds[i].fd]._buffer += std::string(buffer, bytesRead);
 
 	// Process all complete commands (ending with \r\n)
@@ -230,7 +233,8 @@ void Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 }
 
 
-// finds the target for the message and returns either the userSocket, -1 if its an existing channel or 0 if no target is found
+// finds the target for the message and returns either the userSocket
+// -1 if its an existing channel | 0 if no target is found
 int		Server::findTarget(const std::string &target)
 {
 	for (auto it = _users.begin(); it != _users.end(); it++)
@@ -244,19 +248,127 @@ int		Server::findTarget(const std::string &target)
 		return (0);
 }
 
+void Server::handleUserCommand(int userSocket, const std::string& message)
+{
+	std::istringstream iss(message);
+	std::string command;
+	iss >> command;
+
+	std::cout << MAGENTA << "\t#Test#Message: " << message << std::endl;
+	std::cout << "\t#Test#Command: " << command << std::endl << RESET;
+
+	if (_users[userSocket]._registered == false)
+	{
+		std::cout << YELLOW << "User not registered yet" << std::endl << RESET;
+		_commands.cap(userSocket, message);
+	}
+	else if (command == "JOIN")
+	{
+		std::string channelName, password;
+		iss >> channelName >> password;
+		_commands.join(userSocket, channelName, password);
+	}
+	else if (command == "NICK")
+	{
+		std::string nickName;
+		iss >> nickName;
+		_commands.nick(userSocket, nickName);
+	}
+	else if (command == "PING")
+	{
+		std::string token;
+		iss >> token;
+		_commands.ping(userSocket);
+	}
+	else if (command == "KICK")
+	{
+		std::string channelName, nickName, reason;
+		iss >> channelName >> nickName >> reason;
+		_commands.kick(userSocket, channelName, nickName, reason);
+	}
+	else if (command == "INVITE")
+	{
+		std::string target, channel;
+		iss >> target >> channel;
+		_commands.invite(userSocket, target, channel);
+	}
+	else if (command == "TOPIC")
+	{
+		std::string channel, topic;
+		iss >> channel;
+		std::getline(iss, topic);
+		if (!topic.empty())
+			topic.erase(0, 2);
+		_commands.topic(userSocket, channel, topic);
+	}
+	else if (command == "USER")
+	{
+		std::string userName, tmp, realName;
+		iss >> _users[userSocket]._nickname >> tmp >> tmp >> _users[userSocket]._realName >> realName;
+		_users[userSocket]._realName.erase(0, 6);
+		_users[userSocket]._realName += " " + realName;
+		welcomeMsg(userSocket);
+	}
+	else if (command == "MODE")
+	{
+		std::string channel, flag, param;
+		std::vector<std::string> params;
+		iss >> channel >> flag;
+		while (iss >> param)
+			params.push_back(param);
+		_commands.mode(userSocket, channel, flag, params);
+	}
+	else if (command == "QUIT")
+	{
+		_commands.quit(userSocket);
+	}
+	else if (command == "PART")
+	{
+		std::string channel;
+		iss >> channel;
+		_commands.part(userSocket, channel);
+	}
+	else if (command == "PRIVMSG")
+	{
+		std::string target, messageContent;
+		iss >> target;
+		std::getline(iss, messageContent);
+		_commands.privmsg(userSocket, _users[userSocket]._mask, target, messageContent);
+	}
+	else if (!command.empty())
+	{
+		std::cout << MAGENTA << "Unknown command received: [" << command << "]" << RESET << std::endl;
+		sendTo(userSocket, ERR_UNKNOWNCOMMAND(_users[userSocket]._nickname, command));
+	}
+	if (!_users[userSocket]._buffer.empty() && !isOnlyWhitespace(_users[userSocket]._buffer))
+	{
+		size_t pos = _users[userSocket]._buffer.find('\n');
+		if (pos != std::string::npos)
+			_users[userSocket]._buffer.erase(0, pos + 1);
+		std::cout << MAGENTA << "BUFFER: " << _users[userSocket]._buffer << "ENDOFBUFFER" << RESET << std::endl;
+		handleUserCommand(userSocket, _users[userSocket]._buffer);
+	}
+	_users[userSocket]._buffer.clear();
+}
+
+// Alte Funktion - falls die neue wie mit KVirc nicht funktioniert
+/*
 void	Server::handleUserCommand(int userSocket, const std::string& message)
 {
 	std::istringstream	iss(message);
 	std::string			command;
 	iss >> command;
-
-	std::cout << MAGENTA <<  "\t#Test#Message: " << message << std::endl;
-	std::cout << "\t#Test#Command: " << command << std::endl << RESET;
+	if (command.empty())
+		return; // empty command, do nothing
+	std::cout << MAGENTA <<  "\t#Test#Message: " << message << std::endl;	//tester kann entferntw werden
+	std::cout << "\t#Test#Command: " << command << std::endl << RESET;	//tester kann entferntw werden
 
 	if (_users[userSocket]._registered == false)
+	{
+		std::cout << YELLOW << "User not registered yet" << std::endl << RESET; // tester kann entfernt werden
 		_commands.cap(userSocket, message);
-
-	else if (command == "JOIN") // joins a channel
+	}
+	else if (command == "JOIN")
 	{
 		std::cout << MAGENTA << "JOIN" << std::endl << RESET;
 		std::string	channelName, password;
@@ -277,15 +389,15 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		iss >> token;
 		_commands.ping(userSocket);
 	}
-	else if (command == "KICK") 	// kicks a user from a channel
+	else if (command == "KICK")
 	{
-		std::string chnlName, nickName, reason;
+		std::string	chnlName, nickName, reason;
 		iss >> chnlName >> nickName >> reason;
 		_commands.kick(userSocket, chnlName, nickName, reason);
 	}
 	else if (command == "INVITE") 	// invits a user to a channel
 	{
-		std::string target, channel;
+		std::string	target, channel;
 		iss >> target >> channel;
 		_commands.invite(userSocket, target, channel);
 		std::cout << "INVITE" << std::endl;
@@ -293,7 +405,7 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	else if (command == "TOPIC") 	// changes or gets the topic of a channel
 	{
 		std::cout << "TOPIC" << std::endl;
-		std::string channel, topic;
+		std::string	channel, topic;
 		iss >> channel;
 		std::getline(iss, topic);
 		if (!topic.empty())
@@ -302,16 +414,21 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	}
 	else if (command == "USER") 	// reads the input from the user
 	{
-		std::string userName, tmp, realName;
+		std::string	userName, tmp, realName;
 		iss >> _users[userSocket]._nickname >> tmp >> tmp >> _users[userSocket]._realName >> realName ;
-		_users[userSocket]._realName.erase(0, 6);
+
+		// size_t pos = _users[userSocket]._buffer.find('\n');
+		// _users[userSocket]._buffer.erase(0, pos + 1);
+
+		_users[userSocket]._realName.erase(0, 6); // nc bug! doppelpunkt
 		_users[userSocket]._realName += " " + realName;
+		welcomeMsg(userSocket);
 	}
 	else if (command == "MODE") 	// sets the mode of a channel and based on the mode sets the usermode
 	{
 		// channel, flag, and the param == username if needed
-		std::string channel, flag, param;
-		std::vector<std::string> params;
+		std::string					channel, flag, param;
+		std::vector<std::string>	params;
 		iss >> channel >> flag;
 		while (iss >> param)
 			params.push_back(param);
@@ -323,13 +440,13 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 	}
 	else if (command == "PART") 	// leaves a channel
 	{
-		std::string chan;
-		iss >> chan;
-		_commands.part(userSocket, chan);
+		std::string	channel;
+		iss >> channel;
+		_commands.part(userSocket, channel);
 	}
 	else if (command == "PRIVMSG")
 	{
-		std::string target, message;
+		std::string	target, message;
 		iss >> target;
 		std::getline(iss, message);
 
@@ -342,13 +459,20 @@ void	Server::handleUserCommand(int userSocket, const std::string& message)
 		std::cout << RED << "Message: " << message << RESET << std::endl;
 		_commands.privmsg(userSocket, _users[userSocket]._mask, target, message);
 	}
+	// Macht fehler aktuell
+	// else // handles unknown commands or commands that are not mandatory
+	// {
+	// 	std::cout << MAGENTA << "Unknown command: " << command << "$" << RESET << std::endl;
+	// 	sendTo(userSocket, ERR_UNKNOWNCOMMAND(_users[userSocket]._nickname, command));
+	// }
 
-	else							// handles unknown commands or commands that are not mandatory
-		sendTo(userSocket, ERR_UNKNOWNCOMMAND(_users[userSocket]._nickname, command)); // for unkown commands (or not mandatory edgecases)
+	if (!_users[userSocket]._buffer.empty()) // !! Whitespaces skip/check to avoid errors from else unkown command
+	{
+		size_t pos = _users[userSocket]._buffer.find('\n');
+		_users[userSocket]._buffer.erase(0, pos + 1);
+		std::cout << MAGENTA << "BUFFER: " << _users[userSocket]._buffer << "ENDOFBUFFER" << RESET << std::endl;
+		handleUserCommand(userSocket, _users[userSocket]._buffer);
+	}
+	_users[userSocket]._buffer.clear(); // clear the buffer after processing the message
 }
-
-void sendTo(int fd, const std::string &message)
-{
-	if (send(fd, message.c_str(), message.size(), 0) == -1)
-		std::cerr << "Failed to send to fd: " << fd << std::endl;
-}
+*/

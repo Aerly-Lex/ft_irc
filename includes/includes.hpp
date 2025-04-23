@@ -29,6 +29,7 @@
 #include "Channel.hpp"
 #include "Commands.hpp"
 #include "replies.hpp"
+#include "Utilities.hpp"
 
 // ANSI Colors
 

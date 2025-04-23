@@ -12,19 +12,25 @@
 
 #include "../../includes/includes.hpp"
 
-void	Commands::kick(int userSocket, std::string channelName, std::string nickName, std::string reason)
+void Commands::kick(int userSocket, std::string channelName, std::string nickName, std::string reason)
 {
+	// Channel exist?
+	if (_channels.find(channelName) == _channels.end())
+		return sendTo(userSocket, ERR_NOSUCHCHANNEL(_users[userSocket]._nickname, channelName));
+
+	// User Operator?
 	if (_channels[channelName].isOperator(userSocket) == false)
-		sendTo(userSocket, ERR_CHANOPRIVSNEEDED(_users[userSocket]._nickname, channelName));
+		return sendTo(userSocket, ERR_CHANOPRIVSNEEDED(_users[userSocket]._nickname, channelName));
+
+	// Member exist?
+	int kickSocket = _channels[channelName].isMember(nickName);
+	if (kickSocket > 0)
+	{
+		_channels[channelName].broadcast(0, ":" + _users[userSocket]._mask + " KICK " + channelName + " " + nickName + " " + reason + "\r\n");
+		_channels[channelName].removeMember(kickSocket);
+	}
 	else
 	{
-		int kickSocket = _channels[channelName].isMember(nickName);
-		if (kickSocket > 0)
-		{
-			_channels[channelName].broadcast(0, ":" + _users[userSocket]._mask + " KICK " + channelName + " " + nickName + " " + reason + "\r\n");
-			_channels[channelName].removeMember(kickSocket);
-		}
-		else
-			sendTo(userSocket, ERR_USERNOTINCHANNEL(_users[userSocket]._nickname, nickName, channelName));
+		sendTo(userSocket, ERR_USERNOTINCHANNEL(_users[userSocket]._nickname, nickName, channelName));
 	}
 }

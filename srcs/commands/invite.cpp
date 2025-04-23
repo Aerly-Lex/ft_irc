@@ -14,8 +14,11 @@
 
 void Commands::invite(int inviterSocket, std::string &targetNick, const std::string &channelName)
 {
+	if (_channels.find(channelName) == _channels.end())
+		return sendTo(inviterSocket, ERR_NOSUCHCHANNEL(_users[inviterSocket]._nickname, channelName));
+
 	if (_channels[channelName].isOperator(inviterSocket) == false)
-		return sendTo(inviterSocket, ERR_CHANOPRIVSNEEDED(_users[inviterSocket]._nickname, targetNick));
+		return sendTo(inviterSocket, ERR_CHANOPRIVSNEEDED(_users[inviterSocket]._nickname, channelName));
 
 	int targetSocket = -1;
 	for (auto it = _users.begin(); it != _users.end(); it++)

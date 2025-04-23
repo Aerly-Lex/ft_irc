@@ -6,7 +6,7 @@
 /*   By: Dscheffn <dscheffn@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 15:27:39 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/14 17:34:54 by Dscheffn         ###   ########.fr       */
+/*   Updated: 2025/04/15 14:18:41 by Dscheffn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,9 @@ void	Commands::cap(int userSocket, const std::string& message)
 
 bool	Server::usersExists(std::string nickname) ////////// ??
 {
-	int i = 0;
-	std::map<int, User>::iterator it = _users.begin();
+	int	i = 0;
+	std::map<int, User>::iterator	it = _users.begin();
+
 	for (; it != _users.end(); ++it)
 	{
 		if (it->second._nickname == nickname)
@@ -119,7 +120,6 @@ bool	Server::usersExists(std::string nickname) ////////// ??
 //         #Test#Command: CAP
 // CAP
 // User 4 sent: PING Nick4 irc.server.com
-
 //         #Test#Message: PING Nick4 irc.server.com
 
 //         #Test#Command: PING
