@@ -280,6 +280,16 @@ void Server::handleUserCommand(int userSocket, const std::string& message)
 		iss >> token;
 		_commands.ping(userSocket);
 	}
+	else if (command == "NOTICE")
+	{
+		std::cout << MAGENTA << "NOTICE" << std::endl << RESET;
+	}
+	else if (command == "WHO")
+	{
+		std::string channel;
+		iss >> channel;
+		_commands.who(userSocket, channel);
+	}
 	else if (command == "KICK")
 	{
 		std::string channelName, nickName, reason;
@@ -304,9 +314,11 @@ void Server::handleUserCommand(int userSocket, const std::string& message)
 	else if (command == "USER")
 	{
 		std::string userName, tmp, realName;
-		iss >> _users[userSocket]._nickname >> tmp >> tmp >> _users[userSocket]._realName >> realName;
-		_users[userSocket]._realName.erase(0, 6);
+		iss >> _users[userSocket]._userName >> tmp >> _users[userSocket]._hostName >> _users[userSocket]._realName;
+		if (_users[userSocket]._realName[0] == ':')
+			_users[userSocket]._realName.erase(0, 6);
 		_users[userSocket]._realName += " " + realName;
+		_users[userSocket]._mask = _users[userSocket]._nickname + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName;
 		welcomeMsg(userSocket);
 	}
 	else if (command == "MODE")
