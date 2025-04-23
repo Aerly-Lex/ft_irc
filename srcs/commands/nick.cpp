@@ -31,6 +31,7 @@ void	Commands::nick(int userSocket, const std::string& newNickname)
 	}
 	std::string oldNickname = _users[userSocket]._nickname;
 	_users[userSocket]._nickname = newNickname;
+	_users[userSocket]._mask = _users[userSocket]._nickname + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName;
 
 	// send NICK changes message to client
 	std::cout << "User " << userSocket << " set nickname to: " << newNickname << std::endl;

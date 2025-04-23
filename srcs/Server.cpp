@@ -243,7 +243,6 @@ void Server::handleUserCommand(int userSocket, const std::string& message)
 	iss >> command;
 
 	std::cout << MAGENTA << "\t#Test#Message: " << message << std::endl; //entfernen
-	std::cout << "\t#Test#Command: " << command << std::endl << RESET; //entfernen
 
 	if (_users[userSocket]._registered == false)
 	{
@@ -252,7 +251,7 @@ void Server::handleUserCommand(int userSocket, const std::string& message)
 	}
 	else if (command == "INVITE")
 	{
-		std::string target, channel;
+		std::string	target, channel;
 		iss >> target >> channel;
 		_commands.invite(userSocket, target, channel);
 	}
@@ -285,7 +284,7 @@ void Server::handleUserCommand(int userSocket, const std::string& message)
 	}
 	else if (command == "NOTICE")
 	{
-		std::cout << MAGENTA << "NOTICE" << std::endl << RESET;
+		std::cout << YELLOW << "NOTICE" << std::endl << RESET;
 	}
 	else if (command == "PART")
 	{
@@ -345,7 +344,7 @@ void Server::handleUserCommand(int userSocket, const std::string& message)
 		size_t pos = _users[userSocket]._buffer.find('\n');
 		if (pos != std::string::npos)
 			_users[userSocket]._buffer.erase(0, pos + 1);
-		std::cout << MAGENTA << "BUFFER: " << _users[userSocket]._buffer << "ENDOFBUFFER" << RESET << std::endl;
+		// std::cout << MAGENTA << "BUFFER: " << _users[userSocket]._buffer << "ENDOFBUFFER" << RESET << std::endl;
 		handleUserCommand(userSocket, _users[userSocket]._buffer);
 	}
 	_users[userSocket]._buffer.clear();
