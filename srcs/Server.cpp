@@ -238,15 +238,12 @@ int		Server::findTarget(const std::string &target)
 
 void Server::handleUserCommand(int userSocket, const std::string& message)
 {
-	std::istringstream iss(message);
-	std::string command;
+	std::istringstream	iss(message);
+	std::string			command;
 	iss >> command;
-
-	std::cout << MAGENTA << "\t#Test#Message: " << message << std::endl; //entfernen
 
 	if (_users[userSocket]._registered == false)
 	{
-		std::cout << YELLOW << "User not registered yet" << std::endl << RESET;
 		_commands.cap(userSocket, message);
 	}
 	else if (command == "INVITE")
@@ -344,8 +341,8 @@ void Server::handleUserCommand(int userSocket, const std::string& message)
 		size_t pos = _users[userSocket]._buffer.find('\n');
 		if (pos != std::string::npos)
 			_users[userSocket]._buffer.erase(0, pos + 1);
-		// std::cout << MAGENTA << "BUFFER: " << _users[userSocket]._buffer << "ENDOFBUFFER" << RESET << std::endl;
-		handleUserCommand(userSocket, _users[userSocket]._buffer);
+		if (!isOnlyWhitespace(_users[userSocket]._buffer))
+			handleUserCommand(userSocket, _users[userSocket]._buffer);
 	}
 	_users[userSocket]._buffer.clear();
 }

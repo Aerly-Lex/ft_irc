@@ -35,7 +35,6 @@ void	Commands::nick(int userSocket, const std::string& newNickname)
 
 	// send NICK changes message to client
 	std::cout << "User " << userSocket << " set nickname to: " << newNickname << std::endl;
-	std::cout << MAGENTA << "SENDING TO CLIENT: " << RPL_NICKCHANGE(oldNickname, newNickname) << std::endl << RESET;
 	sendTo(userSocket, RPL_NICKCHANGE(oldNickname, newNickname));
 
 	// send Message to all channels that the nick belongs to

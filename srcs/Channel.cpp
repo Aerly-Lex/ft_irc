@@ -164,7 +164,6 @@ void	Channel::addOperator(int userSocket, std::string &nick)
 
 void Channel::broadcast(int userSocket, std::string Msg)
 {
-	std::cout << Msg << std::endl;
 	for (auto it = _members.begin(); it != _members.end(); it++)
 		if (userSocket != it->first)
 			sendTo(it->first, Msg);

@@ -29,6 +29,10 @@ void	Commands::join(int userSocket, const std::string& channelName, std::string 
 	if (_channels[channelName].getPass() != password)
 		return sendTo(userSocket, ERR_BADCHANNELKEY(_users[userSocket]._nickname, channelName));
 
+	//check for user limit
+	if (_channels[channelName].getUserLimit() <= _channels[channelName].getMembers().size() && _channels[channelName].getUserLimit() != 0)
+		 return sendTo(userSocket, ERR_CHANNELISFULL(_users[userSocket]._nickname, channelName));
+
 	// Add client to channel
 	_channels[channelName].addMember(userSocket, _users[userSocket]._nickname);
 
@@ -36,9 +40,7 @@ void	Commands::join(int userSocket, const std::string& channelName, std::string 
 		_channels[channelName].removeInvited(_users[userSocket]._nickname);
 
 	// Send JOIN message to client
-	std::cout << _users[userSocket]._nickname + "!" + _users[userSocket]._userName + "@" + _users[userSocket]._hostName + " JOIN :" + channelName << std::endl;
 	std::string	joinMsg = RPL_JOINMSG(_users[userSocket]._nickname, _users[userSocket]._userName, _users[userSocket]._hostName, channelName);
-	std::cout << RED << joinMsg << std::endl << RESET;
 	sendTo(userSocket, joinMsg);
 
 	std::string	names;
@@ -46,14 +48,13 @@ void	Commands::join(int userSocket, const std::string& channelName, std::string 
 	{
 		names = RPL_TOPIC(_users[userSocket]._nickname, channelName, _channels[channelName].getTopic());
 		sendTo(userSocket, names);
-		std::cout << RED << names << std::endl << RESET;
 	}
+
 	names = RPL_NAMREPLY(_users[userSocket]._nickname, channelName, _channels[channelName].getNames());
 	sendTo(userSocket, names);
-	std::cout << RED << names << std::endl << RESET;
+
 	names = RPL_ENDOFNAMES(_users[userSocket]._nickname, channelName);
 	sendTo(userSocket, names);
-	std::cout << RED << names << std::endl << RESET;
 
 	// Send JOIN message to all other clients in channel
 	_channels[channelName].broadcast(userSocket, joinMsg);

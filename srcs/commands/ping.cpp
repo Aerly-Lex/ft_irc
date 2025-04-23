@@ -17,7 +17,7 @@
 // the PING/PONG message is used to check if the server is still alive
 void	Commands::ping(int userSocket)
 {
-	std::string	pongMsg = RPL_PONG(_users[userSocket]._nickname, "irc.server.com");
+	std::string	pongMsg = RPL_PONG(_users[userSocket]._nickname);
 	std::cout << MAGENTA << pongMsg << std::endl << RESET;
 	sendTo(userSocket, pongMsg);
 }

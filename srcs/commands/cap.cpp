@@ -28,28 +28,19 @@ void	Commands::pass(int userSocket,const std::string& password)
 		shutdown(userSocket, SHUT_RDWR);
 		close(userSocket);
 		_users.erase(userSocket);
-		return ;
 	}
 }
 
 // CAP is the first command that a client sends to the server after getting connected
 void	Commands::cap(int userSocket, const std::string& message)
 {
-	std::cout << MAGENTA << "CAP" << std::endl << RESET;
-
 	std::istringstream	iss(message);
-	std::string			command, subCommand, params, tmp;
+	std::string			command, subCommand, params;
 
-	iss >> command >> subCommand >> params; //Read first and second word
+	iss >> command >> subCommand >> params;
 
-	std::cout << RED << "iss:" << iss.str() << std::endl;		// entfernen!
-	std::cout << RED << "com:" << command << std::endl;		// entfernen!
-	std::cout << RED << "sub:" << subCommand << std::endl;		// entfernen!
-	std::cout << RED << "par:" << params << std::endl << RESET;		// entfernen!
 	if (subCommand == "LS")
 	{
-		std::cout << GREEN << "LS" << std::endl << RESET;
-
 		std::string	capResponse = "CAP * LS :multi-prefix sasl\r\n";
 		sendTo(userSocket, capResponse);
 		_users[userSocket]._buffer.clear();
@@ -57,7 +48,6 @@ void	Commands::cap(int userSocket, const std::string& message)
 	}
 	else if (subCommand == "REQ")
 	{
-		std::cout << GREEN << "REQ" << std::endl << RESET;
 		std::getline(iss, params);
 		std::string	capResponse = "CAP * ACK :multi-prefix\r\n";
 		sendTo(userSocket, capResponse);
@@ -66,17 +56,22 @@ void	Commands::cap(int userSocket, const std::string& message)
 	}
 	else if (subCommand == "END")
 	{
-		std::cout << GREEN << "END" << std::endl << RESET;
 		_users[userSocket]._loginProcess = "END";
 		return;
 	}
-	if (command == "PASS")
+
+	if (command == "PASS" && _users[userSocket]._loginProcess == "END")
 	{
-		std::cout << GREEN << "PASS" << std::endl << RESET;
 		if (subCommand[0] == ':')
 			subCommand.erase(0, 1);
 		pass(userSocket, subCommand);
 	}
+	else if( _users[userSocket]._loginProcess == "END")
+	{
+		std::cout << YELLOW << "User not registered yet" << std::endl << RESET;
+		return sendTo(userSocket, "Please enter Password!\r\n");
+	}
+
 	if (params.empty() && _users[userSocket]._registered == true)
 	{
 		if (!_users[userSocket]._buffer.empty() && params == "NICK")
@@ -85,10 +80,5 @@ void	Commands::cap(int userSocket, const std::string& message)
 		}
 		_server.welcomeMsg(userSocket);
 		_users[userSocket]._loginProcess = "DONE";
-	}
-	std::string	token;
-	while (iss >> token)
-	{
-		std::cout << GREEN << "token:" << token << std::endl << RESET;
 	}
 }

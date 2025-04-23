@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stopp <stopp@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 13:38:50 by Dscheffn          #+#    #+#             */
-/*   Updated: 2025/04/23 11:00:03 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/23 15:25:55 by stopp            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 // std::string myInfo = ":irc.server.com 004 " + _users[userSocket]._nickname + " irc.server.com 1.0 iov" + CRLF;
 
 // // send PONG on incoming PING
-#define RPL_PONG(nickname, hostname) ("PONG" + nickname + " " + hostname + CRLF)
+#define RPL_PONG(nickname) ("PONG " + nickname + " " + std::string(SRV_NAME) + CRLF)
 // RPL_CHANNELMODEIS (324) sending the modes of the Channel
 #define RPL_CHANNELNAMEIS(nickname, channelname, modes) (":" + std::string(SRV_NAME) + " 324 " + nickname + " " + channelname + " " + modes + CRLF)
 // RPL_JOINMSG replies the Joinmessage of the client as confirmation
@@ -83,6 +83,8 @@
 #define ERR_NEEDMOREPARAMS(nickname, command) (":" + std::string(SRV_NAME) + " 461 " + nickname + " " + command + " :Not enough parameters" + CRLF)
 // ERR_ALREADYREGISTRED (464)
 #define ERR_PASSWDMISMATCH(nickname) (":" + std::string(SRV_NAME) + " 464 " + nickname + " :Password incorrect" + CRLF)
+// ERR_CHANNELISFULL (471)
+#define ERR_CHANNELISFULL(nickname, channelname) (":" + std::string(SRV_NAME) + " 471 " + nickname + " " + channelname + " :Cannot join, channel full" + CRLF)
 // ERR_INVITEONLYCHAN (473)
 #define ERR_INVITEONLYCHAN(nickname, channelname) (":" + std::string(SRV_NAME) + " 473 " + nickname + " " + channelname + " :Cannot join channel" + CRLF)
 // ERR_BADCHANNELKEY (475) if given wrong or no password for protected channel
