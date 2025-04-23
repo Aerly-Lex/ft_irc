@@ -221,15 +221,15 @@ void Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 	_users[fds[i].fd]._buffer += std::string(buffer, bytesRead);
 
 	// Process all complete commands (ending with \r\n)
-	size_t pos;
-	while ((pos = _users[fds[i].fd]._buffer.find("\r\n")) != std::string::npos)
-	{
-		std::string line = _users[fds[i].fd]._buffer.substr(0, pos);
-		_users[fds[i].fd]._buffer.erase(0, pos + 2);
+	// size_t pos;
+	// while ((pos = _users[fds[i].fd]._buffer.find("\r\n")) != std::string::npos)
+	// {
+	// 	std::string line = _users[fds[i].fd]._buffer.substr(0, pos);
+	// 	_users[fds[i].fd]._buffer.erase(0, pos + 2);
 
-		std::cout << MAGENTA << "COMMAND: " << line << RESET << std::endl;
-		handleUserCommand(fds[i].fd, line);
-	}
+	// 	std::cout << MAGENTA << "COMMAND: " << line << RESET << std::endl;
+	// }
+	handleUserCommand(fds[i].fd, _users[fds[i].fd]._buffer);
 }
 
 
