@@ -322,6 +322,16 @@ void Server::handleUserCommand(int userSocket, const std::string& message)
 	{
 		_commands.quit(userSocket);
 	}
+	else if (command == "NOTICE")
+	{
+		std::cout << MAGENTA << "NOTICE" << std::endl << RESET;
+	}
+	else if (command == "WHO")
+	{
+		std::string target;
+		iss >> target;
+		sendTo(userSocket, ":IRC_GANG 315 " + _users[userSocket]._nickname + " " + target + " :End of WHO list\r\n");
+	}
 	else if (command == "PART")
 	{
 		std::string channel;
