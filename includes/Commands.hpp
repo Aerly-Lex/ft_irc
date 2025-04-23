@@ -37,6 +37,7 @@ class Commands
 		void	pass(int userSocket, const std::string& password);
 		void	ping(int userSocket);
 		void	quit(int userSocket);
+		void	who(int userSocket, std::string &channelName);
 		void	topic(int userSocket, std::string channel, std::string topic);
 		void	kick(int userSocket, std::string channelName, std::string nickName, std::string reason);
 		void	invite(int inviterSocket, std::string &targetNick, const std::string &channelName);

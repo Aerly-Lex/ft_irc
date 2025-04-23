@@ -73,7 +73,6 @@ void	Commands::cap(int userSocket, const std::string& message)
 		_users[userSocket]._loginProcess = "END";
 		return;
 	}
-
 	if (command == "PASS")
 	{
 		std::cout << GREEN << "PASS" << std::endl << RESET;
@@ -81,13 +80,15 @@ void	Commands::cap(int userSocket, const std::string& message)
 			subCommand.erase(0, 1);
 		pass(userSocket, subCommand);
 	}
-
 	if (params.empty() && _users[userSocket]._registered == true)
 	{
+		if (!_users[userSocket]._buffer.empty() && params == "NICK")
+		{
+			iss >> _users[userSocket]._nickname;
+		}
 		_server.welcomeMsg(userSocket);
 		_users[userSocket]._loginProcess = "DONE";
 	}
-
 	std::string	token;
 	while (iss >> token)
 	{
