@@ -53,37 +53,8 @@ int	main(int argc, char **argv)
 	}
 	return 0;
 }
+
 /*
-General ToDo:
-im server.cpp:
-
-Fix unknown command!
-	Antwort von chorst: Ja, das ist ein Bug. Ich habs gefixed. Das war ein Fehler in der handleUserCommand() Funktion. Ich hab die Funktion so umgeschrieben, dass sie jetzt den richtigen Fehler zurückgibt. Die alte Funktion hab ich auskommentiert, falls die neue wieder Probleme macht.
-
-Do we need WHO command?
-	Antwort von chorst: Nein das ist nicht mandatory
-
-There is NOTICE command?
-	Antwort von chorst: Ja, aber nicht mandatory denn dafür gibt es "privmsg" im projekt (NOTICE ist sowas wie der kleine Bruder von privmsg)
-
-User.cpp kann gelöscht werden I guess
-	Anwort von chorst: Ja, kann es und ich habs grad getan
-
-Doppelter Nickname in use - es kommt kein fehlermessage, dass nickname bereits vorhanden ist
-	Antwort von chorst: Habs gefixed. Der ERR_NICKNAMEINUSE war falsch definiert und das ging vorher wegen dem fehlerhaften ERR_NICKNAMEINUSE-Makro nicht korrekt.
-
-Christopher:
-Extra funktion in utility packen, dass es whitespaces überspringen soll, entfernen soll keine ahnung, un die pos zuruckgeben
-Goal: Ob im String nur noch spaces und \0 sind
-Das ist notwendig im Server.cpp - server::handleusercommand, ganz unten
-	if (!_users[userSocket]._buffer.empty())
-	Antwort von chorst: Ja, das ist notwendig. Ich habs jetzt so gemacht, dass ich den String mit isOnlyWhitespace() überprüfe und dann die Funktion handleUserCommand() aufrufe. Das ist jetzt in der Server.cpp drin.
-
 TEST EXAMPLES
-\$> nc -C 127.0.0.1 6667
-com^Dman^Dd
+nc -C 127.0.0.1 6667
 */
-
-// /* ************************************************************************** */
-// /*	ICH HAB ALLE FUNKTIONEN GETESTET UND ALLES FUNKTIONIERT WIE ES SOLL (chorst)	*/
-// /* **************************************************************************** */

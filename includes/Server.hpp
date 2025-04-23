@@ -51,7 +51,6 @@ class Server
 		void			initServer();
 		void			run();
 
-		bool 	usersExists(std::string nickname);
 		void	acceptNewUsers(std::vector<pollfd>& fds);
 		void	removeUserFromAllChannels(int socket);
 		void	handleUserMessage(std::vector<pollfd>& fds, int i);

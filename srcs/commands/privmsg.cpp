@@ -6,13 +6,13 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:11:41 by stopp             #+#    #+#             */
-/*   Updated: 2025/04/23 11:00:49 by chorst           ###   ########.fr       */
+/*   Updated: 2025/04/23 13:55:10 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/includes.hpp"
 
-
+// send a private message to a user or everyone in a channel
 void	Commands::privmsg(int userSocket, std::string userMask, std::string target, std::string message)
 {
 	int tgt = _server.findTarget(target);

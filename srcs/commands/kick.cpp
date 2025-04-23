@@ -12,6 +12,8 @@
 
 #include "../../includes/includes.hpp"
 
+// Kick command for operators to remove users from a channel
+// Usage: KICK <channel> <user> [<reason>]
 void Commands::kick(int userSocket, std::string channelName, std::string nickName, std::string reason)
 {
 	// Channel exist?

@@ -12,6 +12,7 @@
 
 #include "../../includes/includes.hpp"
 
+// set/change Nickname
 void	Commands::nick(int userSocket, const std::string& newNickname)
 {
 	// check if nickname is valid/empty -> will not happen cause KVirc is not allowing emtpy NICK command

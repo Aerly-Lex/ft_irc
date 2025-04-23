@@ -12,6 +12,7 @@
 
 #include "../../includes/includes.hpp"
 
+// Topic command is for setting the topic of a channel.
 void	Commands::topic(int userSocket, std::string channel, std::string topic)
 {
 	if (topic.empty())

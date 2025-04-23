@@ -12,6 +12,12 @@
 
 #include "../../includes/includes.hpp"
 
+// set/change channel modes
+// +i = invite only
+// +t = topic restriction for operator only
+// +k = changing channel key (password)
+// +o = changing operator privileges
+// +l = changing userLimit of the channel
 void	Commands::mode(int userSocket, std::string channel, std::string flag, std::vector<std::string> params)
 {
 	if (flag.empty())

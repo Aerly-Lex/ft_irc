@@ -13,7 +13,6 @@
 #include "../../includes/includes.hpp"
 
 // leave the channel
-
 void Commands::part(int userSocket, const std::string& channelName)
 {
 	if (channelName.empty()) // not enough input args

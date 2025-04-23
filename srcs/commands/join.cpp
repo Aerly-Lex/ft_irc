@@ -58,5 +58,3 @@ void	Commands::join(int userSocket, const std::string& channelName, std::string 
 	// Send JOIN message to all other clients in channel
 	_channels[channelName].broadcast(userSocket, joinMsg);
 }
-
-// :<nick>!<user>@<host> JOIN :<channel>

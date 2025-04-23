@@ -13,7 +13,6 @@
 #include "../../includes/includes.hpp"
 
 // disconnect from the server
-
 void	Commands::quit(int userSocket)
 {
 	for (auto it = _channels.begin(); it != _channels.end(); it++)
