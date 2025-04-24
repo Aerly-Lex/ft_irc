@@ -67,6 +67,7 @@ void	Server::welcomeMsg(int userSocket)
 
 void	Server::signalHandler(int signum)
 {
+	(void)signum;
 	const char	*msg = "\nInterrupt signal received. Exiting...\n";
 	write(STDOUT_FILENO, msg, strlen(msg)); // because std::cout is buffered and would not flush
 	Server::Signal = true;

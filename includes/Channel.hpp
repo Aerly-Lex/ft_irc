@@ -11,7 +11,7 @@ class Channel
 		std::string					_topic;
 		std::string					_topicData;
 		std::string					_password;
-		int							_userLimit;
+		size_t						_userLimit;
 
 		bool						_inviteOnly;
 		bool						_topic_rigths;
@@ -31,7 +31,7 @@ class Channel
 		std::string					getTopic() const;
 		std::string					getTopicData() const;
 		std::string					getPass() const;
-		int							getUserLimit() const;
+		size_t						getUserLimit() const;
 		bool						isInviteOnly() const;
 		bool						isTopicRights() const;
 		std::map<int, std::string>&	getMembers();

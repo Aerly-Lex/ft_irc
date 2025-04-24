@@ -37,7 +37,7 @@ std::string					Channel::getName() const { return _name; }
 std::string					Channel::getTopic() const { return _topic; }
 std::string					Channel::getTopicData() const { return _topicData; }
 std::string					Channel::getPass() const{ return _password; }
-int							Channel::getUserLimit() const { return _userLimit; }
+size_t						Channel::getUserLimit() const { return _userLimit; }
 bool						Channel::isInviteOnly() const{ return _inviteOnly; }
 bool						Channel::isTopicRights() const { return _topic_rigths; }
 std::map<int, std::string>&	Channel::getMembers() { return _members; }

@@ -20,6 +20,8 @@
 // +l = changing userLimit of the channel
 void	Commands::mode(int userSocket, std::string channel, std::string flag, std::vector<std::string> params)
 {
+	if (_channels.find(channel) == _channels.end())
+		return sendTo(userSocket, ERR_NOSUCHCHANNEL(_users[userSocket]._nickname, channel));
 	if (flag.empty())
 	{
 		std::string modes = _channels[channel].getChannelModes();
@@ -32,11 +34,11 @@ void	Commands::mode(int userSocket, std::string channel, std::string flag, std::
 		return sendTo(userSocket, ERR_CHANOPRIVSNEEDED(_users[userSocket]._nickname, channel));
 	// now parsing so it works for complex mode commands
 	char	sign, c;
-	int		paramIdx = 0;
+	size_t	paramIdx = 0;
 	int		limit;
 	std::string nickname;
 
-	for(int i = 0; i < flag.size(); i++)
+	for(size_t i = 0; i < flag.size(); i++)
 	{
 		c = flag[i];
 		if (c == '+' || c == '-')

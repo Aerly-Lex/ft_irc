@@ -2,7 +2,7 @@
 
 NAME		:= ircserv
 CXX			:= c++
-CXXFLAGS	= -std=c++17 #-Wall -Werror -Wextra -std=c++17 -Iincludes
+CXXFLAGS	= -Wall -Werror -Wextra -std=c++17 -Iincludes
 
 SRC			=	srcs/main.cpp \
 				srcs/Server.cpp \
