@@ -193,7 +193,10 @@ void	Server::acceptNewUsers(std::vector<pollfd>& fds)
 void Server::removeUserFromAllChannels(int socket)
 {
 	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+	{
+		_commands.part(socket, it->first);
 		it->second.removeMember(socket);
+	}
 	_users.erase(socket);
 }
 
@@ -205,6 +208,7 @@ void Server::handleUserMessage(std::vector<pollfd>& fds, int i)
 	if (bytesRead <= 0)
 	{
 		std::cout << "User " << fds[i].fd << " disconnected" << std::endl;
+		removeUserFromAllChannels(fds[i].fd);
 		close(fds[i].fd);
 		_users.erase(fds[i].fd);
 		fds.erase(fds.begin() + i);
